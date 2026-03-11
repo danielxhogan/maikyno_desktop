@@ -22,6 +22,11 @@ int main(int argc, char **argv)
   if (!parser.positionalArguments().isEmpty())
     source = QUrl::fromUserInput(parser.positionalArguments().at(0), QDir::currentPath());
 
+  QVariantMap initial_properties{
+    {"source", source}
+  };
+
+  engine.setInitialProperties(initial_properties);
   engine.loadFromModule("player", "Main");
 
   return app.exec();
