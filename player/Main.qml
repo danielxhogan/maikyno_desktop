@@ -11,12 +11,12 @@ ApplicationWindow {
   required property url source
 
   function play_media() {
-    console.log(`root.source: ${root.source}`)
     media_player.play()
   }
 
-  Component.onCompleted: {
-    play_media()
+  function open_file(path) {
+    media_player.source = path
+    media_player.play();
   }
 
   MediaPlayer {
@@ -25,11 +25,20 @@ ApplicationWindow {
     audioOutput: AudioOutput {
       id: audio_output
     }
-    source: root.source
   }
 
   VideoOutput {
     id: video_output
     anchors.fill: parent
+  }
+
+  PlayerControls {
+    id: playback_control
+    media_player: media_player
+  }
+
+  Component.onCompleted: {
+    if (source.toString().length > 0)
+      open_file(source)
   }
 }
