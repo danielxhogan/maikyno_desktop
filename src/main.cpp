@@ -25,10 +25,9 @@ int main(int argc, char **argv)
   // QVariantMap initial_properties{
   //   {"source", source}
   // };
-
   // engine.setInitialProperties(initial_properties);
 
-  engine.loadFromModule("pages", "Pages");
+  engine.loadFromModule("pages", "Main");
 
   return app.exec();
 }
