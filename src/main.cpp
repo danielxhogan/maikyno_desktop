@@ -22,12 +22,13 @@ int main(int argc, char **argv)
   if (!parser.positionalArguments().isEmpty())
     source = QUrl::fromUserInput(parser.positionalArguments().at(0), QDir::currentPath());
 
-  QVariantMap initial_properties{
-    {"source", source}
-  };
+  // QVariantMap initial_properties{
+  //   {"source", source}
+  // };
 
-  engine.setInitialProperties(initial_properties);
-  engine.loadFromModule("player", "Main");
+  // engine.setInitialProperties(initial_properties);
+
+  engine.loadFromModule("pages", "Pages");
 
   return app.exec();
 }

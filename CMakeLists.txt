@@ -11,5 +11,6 @@ add_subdirectory(src)
 target_link_libraries(maikyno_desktop PRIVATE
     Qt6::Core
     Qt6::Quick
+    pagesplugin
     playerplugin
 )
