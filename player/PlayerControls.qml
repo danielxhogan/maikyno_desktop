@@ -15,13 +15,13 @@ Item {
 
       PlayerButton {
         id: play_button
-        icon.source: "icons/play.svg"
+        icon.source: "./icons/play.svg"
         onClicked: root.media_player.play()
       }
 
       PlayerButton {
         id: paused_button
-        icon.source: "icons/stop.svg"
+        icon.source: "./icons/stop.svg"
         onClicked: root.media_player.pause()
       }
     }
