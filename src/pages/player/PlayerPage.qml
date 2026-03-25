@@ -8,7 +8,6 @@ Item {
 
         Player {
             id: player
-            backend: Player.PLAYER_BACKEND_TYPE_MPV
             src: app.src
             anchors.fill: parent
         }

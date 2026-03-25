@@ -7,12 +7,11 @@
 Player::Player(QQuickItem *parent) : QQuickItem(parent)
 {
     setFlag(ItemHasContents);
-    connect(this, &Player::new_frame, this, &QQuickItem::update, Qt::QueuedConnection);
-}
-
-Player::PlayerBackendType Player::get_backend()
-{
-    return backend_type;
+    connect(this, &Player::new_frame, this, &QQuickItem::update,
+        Qt::QueuedConnection);
+    backend = std::make_unique<MpvBackend>();
+    backend_type = PLAYER_BACKEND_TYPE_MPV;
+    backend->set_update_callback(on_update, this);
 }
 
 void Player::on_update(void *ctx)
@@ -21,33 +20,15 @@ void Player::on_update(void *ctx)
     emit player->new_frame();
 }
 
-void Player::set_backend(PlayerBackendType bt)
-{
-    if (backend && backend_type == bt)
-        return;
-    else if (bt == PLAYER_BACKEND_TYPE_MPV) {
-        backend = std::make_unique<MpvBackend>();
-        backend_type = PLAYER_BACKEND_TYPE_MPV;
-        backend->set_update_callback(on_update, this);
-    }
-    emit player_backend_changed();
-    update();
-}
-
 QString Player::get_src() const
 {
-    if (!backend)
-        return "";
     return backend->src;
 }
 
 void Player::set_src(const QString &src_prop)
 {
-    if (!backend)
-        return;
     if (src_prop == backend->src || src_prop.isEmpty())
         return;
-
     backend->src = src_prop;
     emit src_changed();
     if (backend && backend->render_context_initialized()) {

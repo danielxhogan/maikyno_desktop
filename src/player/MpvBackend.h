@@ -16,7 +16,7 @@ public:
     virtual void pause_play() override;
     virtual void seek(double sec) override;
 
-    int render_context_initialized();
+    int render_context_initialized() override;
 
 private:
     mpv_handle *mpv;

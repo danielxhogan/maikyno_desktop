@@ -44,16 +44,23 @@ void MpvBackend::set_update_callback(UpdateCallback cb, void *ctx)
 void MpvBackend::render(int fbo_id, int width, int height)
 {
     if (!mpv_render_ctx) {
-        mpv_opengl_init_params gl_init_params[1] = {get_proc_address_mpv, nullptr};
+        mpv_opengl_init_params gl_init_params[1] = {
+            get_proc_address_mpv,
+            nullptr
+        };
         mpv_render_param params[] {
-            {MPV_RENDER_PARAM_API_TYPE, const_cast<char *>(MPV_RENDER_API_TYPE_OPENGL)},
+            {
+                MPV_RENDER_PARAM_API_TYPE,
+                const_cast<char *>(MPV_RENDER_API_TYPE_OPENGL)
+            },
             {MPV_RENDER_PARAM_OPENGL_INIT_PARAMS, &gl_init_params},
             {MPV_RENDER_PARAM_INVALID, nullptr}
         };
 
         if (mpv_render_context_create(&mpv_render_ctx, mpv, params) < 0)
             throw std::runtime_error("Failed to initalize mpv GL context.");
-        mpv_render_context_set_update_callback(mpv_render_ctx, update_cb, update_ctx);
+        mpv_render_context_set_update_callback(mpv_render_ctx,
+            update_cb, update_ctx);
 
         if (pending_src) {
             load_src();

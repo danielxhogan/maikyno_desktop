@@ -9,7 +9,6 @@
 
 class Player : public QQuickItem {
     Q_OBJECT
-    Q_PROPERTY(PlayerBackendType backend READ get_backend WRITE set_backend NOTIFY player_backend_changed);
     Q_PROPERTY(QString src READ get_src WRITE set_src NOTIFY src_changed);
 
 public:
@@ -21,8 +20,6 @@ public:
         PLAYER_BACKEND_TYPE_NONE
     };
     Q_ENUM(PlayerBackendType)
-    PlayerBackendType get_backend();
-    void set_backend(PlayerBackendType pb);
 
     QString get_src() const;
     void set_src(const QString &src_prop);
