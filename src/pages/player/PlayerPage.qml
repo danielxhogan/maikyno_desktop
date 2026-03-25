@@ -17,6 +17,31 @@ Item {
             }
         }
 
+        Shortcut {
+            sequence: "Space"
+            onActivated: player.pause_play()
+        }
+
+        Shortcut {
+            sequence: "w"
+            onActivated: player.seek(-60)
+        }
+
+        Shortcut {
+            sequence: "e"
+            onActivated: player.seek(-5)
+        }
+
+        Shortcut {
+            sequence: "r"
+            onActivated: player.seek(5)
+        }
+
+        Shortcut {
+            sequence: "t"
+            onActivated: player.seek(60)
+        }
+
         Row {
             id: osc
             anchors.bottom: player.bottom

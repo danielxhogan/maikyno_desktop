@@ -62,3 +62,13 @@ void Player::play_file(const QString &params)
     backend->play_file(params);
 
 }
+
+void Player::pause_play()
+{
+    backend->pause_play();
+}
+
+void Player::seek(double sec)
+{
+    backend->seek(sec);
+}

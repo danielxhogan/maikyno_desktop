@@ -41,16 +41,6 @@ void MpvBackend::set_update_callback(UpdateCallback cb, void *ctx)
     update_ctx = ctx;
 }
 
-void MpvBackend::play_file(const QString &url)
-{
-    QVariant loadfile = "loadfile";
-    QVariantList loadfile_command;
-    loadfile_command.append(loadfile);
-    loadfile_command.append(url);
-
-    mpv_utils::command(mpv, loadfile_command);
-}
-
 void MpvBackend::render(int fbo_id, int width, int height)
 {
     if (!mpv_render_ctx) {
@@ -79,6 +69,32 @@ void MpvBackend::render(int fbo_id, int width, int height)
         {MPV_RENDER_PARAM_INVALID, nullptr}
     };
     mpv_render_context_render(mpv_render_ctx, params);
+}
+void MpvBackend::play_file(const QString &url)
+{
+    QVariant loadfile = "loadfile";
+    QVariantList loadfile_command;
+    loadfile_command.append(loadfile);
+    loadfile_command.append(url);
+
+    mpv_utils::command(mpv, loadfile_command);
+}
+
+void MpvBackend::pause_play()
+{
+    QVariantList play_pause_command;
+    play_pause_command.append("cycle");
+    play_pause_command.append("pause");
+    mpv_utils::command(mpv, play_pause_command);
+}
+
+void MpvBackend::seek(double sec)
+{
+    QVariantList seek_command;
+    seek_command.append("seek");
+    QString sec_str = QString::number(sec);
+    seek_command.append(sec_str);
+    mpv_utils::command(mpv, seek_command);
 }
 
 int MpvBackend::render_context_initialized()

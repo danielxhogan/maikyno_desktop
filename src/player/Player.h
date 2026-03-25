@@ -34,6 +34,8 @@ signals:
 
 public slots:
     void play_file(const QString &params);
+    void pause_play();
+    void seek(double sec);
 
 protected:
     QSGNode *updatePaintNode(QSGNode             *old_node,
