@@ -1,32 +1,21 @@
-#include <QGuiApplication>
+#include "player/Player.h"
+
 #include <QQmlApplicationEngine>
-#include <QCommandLineParser>
-#include <QDir>
-#include <QUrl>
+#include <QQuickWindow>
 
 int main(int argc, char **argv)
 {
+  QQuickWindow::setGraphicsApi(QSGRendererInterface::OpenGL);
   QGuiApplication app(argc, argv);
+  std::setlocale(LC_NUMERIC, "C");
 
   QCoreApplication::setApplicationName("maikyno");
   QCoreApplication::setOrganizationName("maikyno");
 
-  QCommandLineParser parser;
-  parser.addPositionalArgument("url", "path of media file to play");
-  parser.process(app);
-
   QQmlApplicationEngine engine;
   QObject::connect(&engine, &QQmlApplicationEngine::quit, &app, &QGuiApplication::quit);
 
-  QUrl source;
-  if (!parser.positionalArguments().isEmpty())
-    source = QUrl::fromUserInput(parser.positionalArguments().at(0), QDir::currentPath());
-
-  // QVariantMap initial_properties{
-  //   {"source", source}
-  // };
-  // engine.setInitialProperties(initial_properties);
-
+  qmlRegisterType<Player>("Player", 1, 0, "Player");
   engine.loadFromModule("pages", "Main");
 
   return app.exec();
