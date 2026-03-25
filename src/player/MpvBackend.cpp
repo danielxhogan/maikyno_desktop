@@ -54,6 +54,11 @@ void MpvBackend::render(int fbo_id, int width, int height)
         if (mpv_render_context_create(&mpv_render_ctx, mpv, params) < 0)
             throw std::runtime_error("Failed to initalize mpv GL context.");
         mpv_render_context_set_update_callback(mpv_render_ctx, update_cb, update_ctx);
+
+        if (pending_src) {
+            load_src();
+            pending_src = 0;
+        }
     }
 
     mpv_opengl_fbo fbo{
@@ -70,13 +75,14 @@ void MpvBackend::render(int fbo_id, int width, int height)
     };
     mpv_render_context_render(mpv_render_ctx, params);
 }
-void MpvBackend::play_file(const QString &url)
+void MpvBackend::load_src()
 {
+    if (src.isEmpty())
+        return;
     QVariant loadfile = "loadfile";
     QVariantList loadfile_command;
     loadfile_command.append(loadfile);
-    loadfile_command.append(url);
-
+    loadfile_command.append(src);
     mpv_utils::command(mpv, loadfile_command);
 }
 

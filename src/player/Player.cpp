@@ -34,6 +34,29 @@ void Player::set_backend(PlayerBackendType bt)
     update();
 }
 
+QString Player::get_src() const
+{
+    if (!backend)
+        return "";
+    return backend->src;
+}
+
+void Player::set_src(const QString &src_prop)
+{
+    if (!backend)
+        return;
+    if (src_prop == backend->src || src_prop.isEmpty())
+        return;
+
+    backend->src = src_prop;
+    emit src_changed();
+    if (backend && backend->render_context_initialized()) {
+        backend->load_src();
+    } else {
+        backend->pending_src = 1;
+    }
+}
+
 QSGNode *Player::updatePaintNode(QSGNode             *old_node,
                                  UpdatePaintNodeData *update_paint_node_data)
 {
@@ -55,12 +78,6 @@ QSGNode *Player::updatePaintNode(QSGNode             *old_node,
     );
     node->set_rect(physical_rect);
     return node;
-}
-
-void Player::play_file(const QString &params)
-{
-    backend->play_file(params);
-
 }
 
 void Player::pause_play()

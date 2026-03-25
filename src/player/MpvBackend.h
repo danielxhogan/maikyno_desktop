@@ -12,7 +12,7 @@ public:
     virtual void set_update_callback(UpdateCallback cb, void *ctx) override;
     virtual void render(int fbo_id, int width, int height) override;
 
-    virtual void play_file(const QString &url) override;
+    virtual void load_src() override;
     virtual void pause_play() override;
     virtual void seek(double sec) override;
 

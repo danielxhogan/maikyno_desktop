@@ -9,12 +9,8 @@ Item {
         Player {
             id: player
             backend: Player.PLAYER_BACKEND_TYPE_MPV
+            src: app.src
             anchors.fill: parent
-
-            MouseArea {
-                anchors.fill: parent
-                onClicked: player.play_file("http://192.168.1.209:8080/media/tha_movies/mk_movies/collections/The Terminator Series/01 - The Terminator/The Terminator.mkv")
-            }
         }
 
         Shortcut {

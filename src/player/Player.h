@@ -10,6 +10,7 @@
 class Player : public QQuickItem {
     Q_OBJECT
     Q_PROPERTY(PlayerBackendType backend READ get_backend WRITE set_backend NOTIFY player_backend_changed);
+    Q_PROPERTY(QString src READ get_src WRITE set_src NOTIFY src_changed);
 
 public:
     explicit Player(QQuickItem *parent = nullptr);
@@ -23,6 +24,9 @@ public:
     PlayerBackendType get_backend();
     void set_backend(PlayerBackendType pb);
 
+    QString get_src() const;
+    void set_src(const QString &src_prop);
+
 private:
     std::unique_ptr<PlayerBackend> backend;
     PlayerBackendType backend_type = PLAYER_BACKEND_TYPE_NONE;
@@ -31,9 +35,9 @@ private:
 signals:
     void new_frame();
     void player_backend_changed();
+    void src_changed();
 
 public slots:
-    void play_file(const QString &params);
     void pause_play();
     void seek(double sec);
 

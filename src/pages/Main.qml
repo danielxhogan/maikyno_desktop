@@ -7,6 +7,7 @@ ApplicationWindow {
     height: 720
     visible: true
     title: qsTr("maikyno")
+    property string src;
 
     StackView {
         id: pages_stack
