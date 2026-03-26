@@ -5,41 +5,58 @@ Item {
     id: connect_root
     property bool loading: false
 
-    Connections {
-        target: server
+    ScrollView {
+        width: parent.width
+        height: parent.height
+        contentWidth: availableWidth
+        contentHeight: main_col.implicitHeight + 60
 
-        function onGet_libraries_response_sucess()
-        {
-            connect_root.loading = false;
-            config.ip = ip_field.text
-            pages_stack.push(libraries_component)
+        Connections {
+            target: server
+
+            function onReq_libraries_sucess()
+            {
+                connect_root.loading = false;
+                server.ip = ip_field.text
+                pages_stack.push(libraries_component)
+            }
+
+            function onReq_libraries_error(message)
+            {
+                connect_root.loading = false;
+                error_message.text = message
+            }
         }
 
-        function onGet_libraries_response_error(message)
-        {
-            connect_root.loading = false;
-            error_message.text = message
-        }
-    }
+        Column {
+            id: main_col
+            width: parent.width
+            anchors.top: parent.top
+            anchors.topMargin: 40
+            spacing: 20
 
-    Column {
-        anchors.centerIn: parent
-        spacing: 20
-        Text { text: "Connect to server" }
-        Text {
-            id: error_message
-            text: ""
-        }
-        TextField {
-            id: ip_field;
-            text: config.ip
-        }
-        Button {
-            text: "Connect"
-            enabled: !connect_root.loading
-            onClicked: {
-                connect_root.loading = true
-                server.get_libraries(ip_field.text)
+            Text {
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: "Connect to server"
+            }
+            Text {
+                id: error_message
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: ""
+            }
+            TextField {
+                id: ip_field;
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: server.ip
+            }
+            Button {
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: "Connect"
+                enabled: !connect_root.loading
+                onClicked: {
+                    connect_root.loading = true
+                    server.req_libraries(ip_field.text)
+                }
             }
         }
     }

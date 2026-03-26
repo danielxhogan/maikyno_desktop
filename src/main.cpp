@@ -1,5 +1,4 @@
 #include "player/Player.h"
-#include "Config.h"
 #include "network/Server.h"
 
 #include <QQmlApplicationEngine>
@@ -15,10 +14,10 @@ int main(int argc, char **argv)
   QCoreApplication::setOrganizationName("maikyno");
 
   QQmlApplicationEngine engine;
-  QObject::connect(&engine, &QQmlApplicationEngine::quit, &app, &QGuiApplication::quit);
+  QObject::connect(&engine, &QQmlApplicationEngine::quit,
+    &app, &QGuiApplication::quit);
 
   qmlRegisterType<Player>("Player", 1, 0, "Player");
-  qmlRegisterType<Config>("Config", 1, 0, "Config");
   qmlRegisterType<Server>("Server", 1, 0, "Server");
   engine.loadFromModule("pages", "Main");
 

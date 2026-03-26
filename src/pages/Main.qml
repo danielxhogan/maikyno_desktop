@@ -1,6 +1,5 @@
 import QtQuick
 import QtQuick.Controls
-import Config
 import Server
 
 ApplicationWindow {
@@ -11,7 +10,6 @@ ApplicationWindow {
     title: qsTr("maikyno")
     property string src;
 
-    Config { id: config }
     Server { id: server }
 
     StackView {
