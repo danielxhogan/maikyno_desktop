@@ -1,13 +1,26 @@
 qt_add_executable(maikyno_desktop
-  "main.cpp"
+    "main.cpp"
+    "Config.cpp"
+    "player/Player.cpp"
+    "player/PlayerRenderNode.cpp"
+    "player/MpvBackend.cpp"
 )
 
-add_subdirectory(pages)
-add_subdirectory(player)
+qt_add_qml_module(maikyno_desktop
+    URI "pages"
+    QML_FILES
+        "pages/Main.qml"
+        "pages/connect/ConnectPage.qml"
+        "pages/libraries/LibrariesPage.qml"
+        "pages/media_dir/MediaDirPage.qml"
+        "pages/videos/VideosPage.qml"
+        "pages/player/PlayerPage.qml"
+)
+
+pkg_check_modules(MPV REQUIRED IMPORTED_TARGET mpv)
 
 target_link_libraries(maikyno_desktop PRIVATE
     Qt6::Core
     Qt6::Quick
-    pagesplugin
-    player
+    PkgConfig::MPV
 )
