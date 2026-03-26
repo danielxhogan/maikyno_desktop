@@ -1,8 +1,8 @@
 #pragma once
 
-#include <QQuickItem>
+#include <QObject>
 
-class Config : public QQuickItem {
+class Config : public QObject {
     Q_OBJECT
     Q_PROPERTY(QString ip READ get_ip WRITE set_ip NOTIFY ip_changed)
 

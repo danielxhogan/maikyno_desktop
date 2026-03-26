@@ -1,5 +1,6 @@
 #include "player/Player.h"
 #include "Config.h"
+#include "network/Server.h"
 
 #include <QQmlApplicationEngine>
 #include <QQuickWindow>
@@ -18,6 +19,7 @@ int main(int argc, char **argv)
 
   qmlRegisterType<Player>("Player", 1, 0, "Player");
   qmlRegisterType<Config>("Config", 1, 0, "Config");
+  qmlRegisterType<Server>("Server", 1, 0, "Server");
   engine.loadFromModule("pages", "Main");
 
   return app.exec();

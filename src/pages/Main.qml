@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import Config
+import Server
 
 ApplicationWindow {
     id: app
@@ -10,9 +11,8 @@ ApplicationWindow {
     title: qsTr("maikyno")
     property string src;
 
-    Config {
-        id: config
-    }
+    Config { id: config }
+    Server { id: server }
 
     StackView {
         id: pages_stack
@@ -27,41 +27,22 @@ ApplicationWindow {
 
     Component {
         id: connect_component
-
-        ConnectPage {
-            id: connect_page
-        }
+        ConnectPage { id: connect_page }
     }
-
     Component {
         id: libraries_component
-
-        LibrariesPage {
-            id: libraries_page
-        }
+        LibrariesPage { id: libraries_page }
     }
-
     Component {
         id: media_dir_component
-
-        MediaDirPage {
-            id: media_dir_page
-        }
+        MediaDirPage { id: media_dir_page }
     }
-
     Component {
         id: videos_component
-
-        VideosPage {
-            id: videos_page
-        }
+        VideosPage { id: videos_page }
     }
-
     Component {
         id: player_component
-
-        PlayerPage {
-            id: player_page
-        }
+        PlayerPage { id: player_page }
     }
 }
