@@ -3,7 +3,6 @@ qt_add_executable(maikyno_desktop
     "Config.cpp"
     "network/Server.cpp"
     "player/Player.cpp"
-    "player/PlayerRenderNode.cpp"
     "player/MpvBackend.cpp"
 )
 
