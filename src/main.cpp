@@ -1,4 +1,5 @@
 #include "player/Player.h"
+#include "Config.h"
 
 #include <QQmlApplicationEngine>
 #include <QQuickWindow>
@@ -16,6 +17,7 @@ int main(int argc, char **argv)
   QObject::connect(&engine, &QQmlApplicationEngine::quit, &app, &QGuiApplication::quit);
 
   qmlRegisterType<Player>("Player", 1, 0, "Player");
+  qmlRegisterType<Config>("Config", 1, 0, "Config");
   engine.loadFromModule("pages", "Main");
 
   return app.exec();

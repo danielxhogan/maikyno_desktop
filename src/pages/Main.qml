@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import Config
 
 ApplicationWindow {
     id: app
@@ -8,6 +9,10 @@ ApplicationWindow {
     visible: true
     title: qsTr("maikyno")
     property string src;
+
+    Config {
+        id: config
+    }
 
     StackView {
         id: pages_stack

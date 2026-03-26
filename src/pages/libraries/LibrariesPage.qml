@@ -5,7 +5,7 @@ Item {
     Column {
         anchors.centerIn: parent
         spacing: 20
-        Text { text: "Select a library" }
+        Text { text: "Select a library from ip: " + config.ip }
         Button {
             text: "Movies library"
             onClicked: pages_stack.push(media_dir_component)

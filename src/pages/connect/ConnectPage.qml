@@ -6,10 +6,16 @@ Item {
         anchors.centerIn: parent
         spacing: 20
         Text { text: "Connect to server" }
-        TextField { id: ip; }
+        TextField {
+            id: ip_field;
+            text: config.ip
+        }
         Button {
             text: "Connect"
-            onClicked: pages_stack.push(libraries_component)
+            onClicked: {
+                config.ip = ip_field.text
+                pages_stack.push(libraries_component)
+            }
         }
     }
 }
