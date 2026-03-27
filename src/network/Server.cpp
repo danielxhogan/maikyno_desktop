@@ -97,3 +97,37 @@ void Server::on_movies_result(QNetworkReply *reply)
         emit req_movies_error("Invalid data recieved from server.");
     }
 }
+
+QVariantList Server::get_videos() const
+{
+    return videos;
+}
+
+void Server::req_videos(const QString &media_dir_id)
+{
+    QUrl url(QString("http://%1:8080/get_videos").arg(ip));
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QString body = QString("{\"media_dir_id\": \"%1\"}").arg(media_dir_id);
+    QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
+    connect(reply, &QNetworkReply::finished,
+        this, [this, reply]() { on_videos_result(reply);});
+}
+
+void Server::on_videos_result(QNetworkReply *reply)
+{
+    reply->deleteLater();
+    if (reply->error() != QNetworkReply::NoError) {
+        emit req_videos_error(reply->errorString());
+        return;
+    }
+
+    QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+    if (doc.isArray()) {
+        videos = doc.array().toVariantList();
+        emit videos_changed();
+        emit req_videos_success();
+    } else {
+        emit req_videos_error("Invalid data recieved from server.");
+    }
+}

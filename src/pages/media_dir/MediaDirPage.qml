@@ -2,11 +2,31 @@ import QtQuick
 import QtQuick.Controls
 
 Item {
+    id: media_dir_root
+    property bool loading: false
+
     ScrollView {
         width: parent.width
         height: parent.height
         contentWidth: availableWidth
         contentHeight: main_col.implicitHeight + 60
+
+        Connections {
+            target: server
+
+            function onReq_videos_success()
+            {
+                media_dir_root.loading = false
+                media_dir_err_msg.text = ""
+                pages_stack.push(videos_component)
+            }
+
+            function onReq_videos_error(message)
+            {
+                media_dir_root.loading = false;
+                media_dir_err_msg.text = message
+            }
+        }
 
         Column {
             id: main_col
@@ -29,6 +49,12 @@ Item {
                 font.pixelSize: 24
             }
 
+            Text {
+                id: media_dir_err_msg
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: ""
+            }
+
             ListView {
                 width: parent.width
                 height: contentHeight
@@ -42,11 +68,11 @@ Item {
                     height: 35
                     anchors.horizontalCenter: parent.horizontalCenter
                     text: modelData.name
-                    // enabled: !libraries_root.loading
-                    // onClicked: {
-                    //     libraries_root.loading = true
-                    //     server.req_library_contents(modelData.id, modelData.media_type)
-                    // }
+                    enabled: !media_dir_root.loading
+                    onClicked: {
+                        media_dir_root.loading = true
+                        server.req_videos(modelData.id)
+                    }
                 }
             }
 

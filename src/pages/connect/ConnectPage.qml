@@ -37,8 +37,11 @@ Item {
             spacing: 20
 
             Text {
+                id: title
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: "Connect to server"
+                font.bold: true
+                font.pixelSize: 24
             }
 
             Text {

@@ -17,6 +17,7 @@ Item {
             function onReq_movies_success()
             {
                 libraries_root.loading = false
+                libraries_err_msg.text = ""
                 pages_stack.push(media_dir_component)
             }
 

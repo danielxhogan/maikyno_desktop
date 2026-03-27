@@ -37,12 +37,12 @@ Item {
             onActivated: player.seek(60)
         }
 
-        Row {
+        Column {
             id: osc
-            anchors.bottom: player.bottom
-            anchors.left: player.left
-            anchors.right: player.right
-            padding: 20
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.topMargin: 20
+            anchors.leftMargin: 20
 
             Button {
                 text: "Back"; onClicked: pages_stack.pop();
