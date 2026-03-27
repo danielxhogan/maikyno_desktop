@@ -4,8 +4,8 @@ import Server
 
 ApplicationWindow {
     id: app
-    width: 1280
-    height: 720
+    width: 1600
+    height: 900
     visible: true
     title: qsTr("maikyno")
     property string src;

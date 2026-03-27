@@ -14,17 +14,18 @@ Item {
         Connections {
             target: server
 
-            function onReq_libraries_sucess()
+            function onReq_libraries_success()
             {
-                connect_root.loading = false;
+                connect_root.loading = false
+                connect_err_msg.text = ""
                 server.ip = ip_field.text
                 pages_stack.push(libraries_component)
             }
 
             function onReq_libraries_error(message)
             {
-                connect_root.loading = false;
-                error_message.text = message
+                connect_root.loading = false
+                connect_err_msg.text = message
             }
         }
 
@@ -39,16 +40,19 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: "Connect to server"
             }
+
             Text {
-                id: error_message
+                id: connect_err_msg
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: ""
             }
+
             TextField {
                 id: ip_field;
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: server.ip
             }
+
             Button {
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: "Connect"
