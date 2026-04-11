@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QString>
+#include <QQuickWindow>
 
 typedef void (*UpdateCallback) (void *ctx);
 
@@ -13,6 +14,9 @@ public:
 
     QString src = "";
     int pending_src = 0;
+    int v_stream_idx = -1;
+    int a_stream_idx = -1;
+
     virtual void load_src() = 0;
     virtual void pause_play() = 0;
     virtual void seek(double sec) = 0;

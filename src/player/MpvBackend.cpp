@@ -82,6 +82,7 @@ void MpvBackend::render(int fbo_id, int width, int height)
     };
     mpv_render_context_render(mpv_render_ctx, params);
 }
+
 void MpvBackend::load_src()
 {
     if (src.isEmpty())

@@ -9,6 +9,8 @@ Item {
         Player {
             id: player
             src: app.src
+            v_stream_idx: app.v_stream_idx
+            a_stream_idx: app.a_stream_idx
             anchors.fill: parent
         }
 

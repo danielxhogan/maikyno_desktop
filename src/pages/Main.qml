@@ -9,6 +9,8 @@ ApplicationWindow {
     visible: true
     title: qsTr("maikyno")
     property string src;
+    property string a_stream_idx;
+    property string v_stream_idx;
 
     Server { id: server }
 
