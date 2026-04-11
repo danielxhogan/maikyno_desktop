@@ -1,6 +1,8 @@
 #!/bin/zsh
 source ~/.zshrc
 
+    # -DUSE_MKP_BACKEND=ON \
+
 mkdir -p ./build && \
 cd ./build && \
 cmake \
