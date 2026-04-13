@@ -111,6 +111,24 @@ void MpvBackend::seek(double sec)
     mpv_utils::command(mpv, seek_command);
 }
 
+void MpvBackend::prev_chapter()
+{
+    QVariantList next_chapter_command;
+    next_chapter_command.append("add");
+    next_chapter_command.append("chapter");
+    next_chapter_command.append("-1");
+    mpv_utils::command(mpv, next_chapter_command);
+}
+
+void MpvBackend::next_chapter()
+{
+    QVariantList next_chapter_command;
+    next_chapter_command.append("add");
+    next_chapter_command.append("chapter");
+    next_chapter_command.append("1");
+    mpv_utils::command(mpv, next_chapter_command);
+}
+
 int MpvBackend::render_context_initialized()
 {
     if (mpv_render_ctx)

@@ -20,11 +20,6 @@ Item {
         }
 
         Shortcut {
-            sequence: "w"
-            onActivated: player.seek(-60)
-        }
-
-        Shortcut {
             sequence: "e"
             onActivated: player.seek(-5)
         }
@@ -35,8 +30,23 @@ Item {
         }
 
         Shortcut {
+            sequence: "w"
+            onActivated: player.seek(-60)
+        }
+
+        Shortcut {
             sequence: "t"
             onActivated: player.seek(60)
+        }
+
+        Shortcut {
+            sequence: "a"
+            onActivated: player.prev_chapter()
+        }
+
+        Shortcut {
+            sequence: "g"
+            onActivated: player.next_chapter()
         }
 
         Column {

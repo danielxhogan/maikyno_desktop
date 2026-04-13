@@ -15,6 +15,8 @@ public:
     virtual void load_src() override;
     virtual void pause_play() override;
     virtual void seek(double sec) override;
+    virtual void next_chapter() override;
+    virtual void prev_chapter() override;
 
     int render_context_initialized() override;
 

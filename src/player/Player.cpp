@@ -111,3 +111,13 @@ void Player::seek(double sec)
 {
     backend->seek(sec);
 }
+
+void Player::prev_chapter()
+{
+    backend->prev_chapter();
+}
+
+void Player::next_chapter()
+{
+    backend->next_chapter();
+}

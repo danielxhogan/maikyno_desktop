@@ -54,6 +54,8 @@ signals:
 public slots:
     void pause_play();
     void seek(double sec);
+    void next_chapter();
+    void prev_chapter();
 
 protected:
     QSGNode *updatePaintNode(QSGNode             *old_node,
