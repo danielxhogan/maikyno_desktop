@@ -54,6 +54,7 @@ signals:
 public slots:
     void pause_play();
     void seek(double sec);
+    void seek_start();
     void next_chapter();
     void prev_chapter();
 

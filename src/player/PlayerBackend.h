@@ -20,6 +20,7 @@ public:
     virtual void load_src() = 0;
     virtual void pause_play() = 0;
     virtual void seek(double sec) = 0;
+    virtual void seek_start() = 0;
     virtual void next_chapter() = 0;
     virtual void prev_chapter() = 0;
 

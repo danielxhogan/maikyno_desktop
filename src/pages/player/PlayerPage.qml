@@ -40,6 +40,11 @@ Item {
         }
 
         Shortcut {
+            sequence: "y"
+            onActivated: player.seek_start()
+        }
+
+        Shortcut {
             sequence: "a"
             onActivated: player.prev_chapter()
         }

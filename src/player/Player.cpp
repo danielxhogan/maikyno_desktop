@@ -112,6 +112,11 @@ void Player::seek(double sec)
     backend->seek(sec);
 }
 
+void Player::seek_start()
+{
+    backend->seek_start();
+}
+
 void Player::prev_chapter()
 {
     backend->prev_chapter();

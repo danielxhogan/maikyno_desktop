@@ -88,45 +88,54 @@ void MpvBackend::load_src()
     if (src.isEmpty())
         return;
     QVariant loadfile = "loadfile";
-    QVariantList loadfile_command;
-    loadfile_command.append(loadfile);
-    loadfile_command.append(src);
-    mpv_utils::command(mpv, loadfile_command);
+    QVariantList loadfile_cmd;
+    loadfile_cmd.append(loadfile);
+    loadfile_cmd.append(src);
+    mpv_utils::command(mpv, loadfile_cmd);
 }
 
 void MpvBackend::pause_play()
 {
-    QVariantList play_pause_command;
-    play_pause_command.append("cycle");
-    play_pause_command.append("pause");
-    mpv_utils::command(mpv, play_pause_command);
+    QVariantList play_pause_cmd;
+    play_pause_cmd.append("cycle");
+    play_pause_cmd.append("pause");
+    mpv_utils::command(mpv, play_pause_cmd);
 }
 
 void MpvBackend::seek(double sec)
 {
-    QVariantList seek_command;
-    seek_command.append("seek");
+    QVariantList seek_cmd;
+    seek_cmd.append("seek");
     QString sec_str = QString::number(sec);
-    seek_command.append(sec_str);
-    mpv_utils::command(mpv, seek_command);
+    seek_cmd.append(sec_str);
+    mpv_utils::command(mpv, seek_cmd);
+}
+
+void MpvBackend::seek_start()
+{
+    QVariantList seek_start_cmd;
+    seek_start_cmd.append("seek");
+    seek_start_cmd.append("0");
+    seek_start_cmd.append("absolute");
+    mpv_utils::command(mpv, seek_start_cmd);
 }
 
 void MpvBackend::prev_chapter()
 {
-    QVariantList next_chapter_command;
-    next_chapter_command.append("add");
-    next_chapter_command.append("chapter");
-    next_chapter_command.append("-1");
-    mpv_utils::command(mpv, next_chapter_command);
+    QVariantList next_chapter_cmd;
+    next_chapter_cmd.append("add");
+    next_chapter_cmd.append("chapter");
+    next_chapter_cmd.append("-1");
+    mpv_utils::command(mpv, next_chapter_cmd);
 }
 
 void MpvBackend::next_chapter()
 {
-    QVariantList next_chapter_command;
-    next_chapter_command.append("add");
-    next_chapter_command.append("chapter");
-    next_chapter_command.append("1");
-    mpv_utils::command(mpv, next_chapter_command);
+    QVariantList next_chapter_cmd;
+    next_chapter_cmd.append("add");
+    next_chapter_cmd.append("chapter");
+    next_chapter_cmd.append("1");
+    mpv_utils::command(mpv, next_chapter_cmd);
 }
 
 int MpvBackend::render_context_initialized()
