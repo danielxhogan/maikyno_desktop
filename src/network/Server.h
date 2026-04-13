@@ -7,10 +7,18 @@
 class Server : public QObject {
     Q_OBJECT
     Q_PROPERTY( QString ip READ get_ip WRITE set_ip NOTIFY ip_changed)
-    Q_PROPERTY( QVariantList libraries READ get_libraries NOTIFY libraries_changed);
-    Q_PROPERTY( QVariantList shows READ get_shows NOTIFY shows_changed);
-    Q_PROPERTY( QVariantList media_dirs READ get_media_dirs NOTIFY media_dirs_changed);
-    Q_PROPERTY( QVariantList videos READ get_videos NOTIFY videos_changed);
+
+    Q_PROPERTY( QVariantList libraries
+        READ get_libraries NOTIFY libraries_changed);
+
+    Q_PROPERTY( QVariantList shows
+        READ get_shows NOTIFY shows_changed);
+
+    Q_PROPERTY( QVariantList media_dirs
+        READ get_media_dirs NOTIFY media_dirs_changed);
+
+    Q_PROPERTY( QVariantList videos
+        READ get_videos NOTIFY videos_changed);
 
 public:
     explicit Server(QObject *parent = nullptr);

@@ -5,20 +5,17 @@
 #include <QQuickItem>
 #include <QSGNode>
 
-#include <memory.h>
-
 class Player : public QQuickItem {
     Q_OBJECT
-    Q_PROPERTY(QString src READ get_src WRITE set_src NOTIFY src_changed);
+    Q_PROPERTY(QString src
+        READ get_src WRITE set_src NOTIFY src_changed);
 
     Q_PROPERTY(int v_stream_idx
-        READ get_v_stream_idx
-        WRITE set_v_stream_idx
+        READ get_v_stream_idx WRITE set_v_stream_idx
         NOTIFY v_stream_idx_changed);
 
     Q_PROPERTY(int a_stream_idx
-        READ get_a_stream_idx
-        WRITE set_a_stream_idx
+        READ get_a_stream_idx WRITE set_a_stream_idx
         NOTIFY a_stream_idx_changed);
 
 public:
@@ -64,6 +61,9 @@ public slots:
     void next_a_stream();
     void prev_s_stream();
     void next_s_stream();
+
+    void sub_pos_up();
+    void sub_pos_down();
 
 protected:
     QSGNode *updatePaintNode(QSGNode             *old_node,

@@ -189,6 +189,24 @@ void MpvBackend::next_s_stream()
     mpv_utils::command(mpv, next_s_stream_cmd);
 }
 
+void MpvBackend::sub_pos_up()
+{
+    QVariantList sub_pos_up_cmd;
+    sub_pos_up_cmd.append("add");
+    sub_pos_up_cmd.append("sub-pos");
+    sub_pos_up_cmd.append("-1");
+    mpv_utils::command(mpv, sub_pos_up_cmd);
+}
+
+void MpvBackend::sub_pos_down()
+{
+    QVariantList sub_pos_down_cmd;
+    sub_pos_down_cmd.append("add");
+    sub_pos_down_cmd.append("sub-pos");
+    sub_pos_down_cmd.append("+1");
+    mpv_utils::command(mpv, sub_pos_down_cmd);
+}
+
 int MpvBackend::render_context_initialized()
 {
     if (mpv_render_ctx)

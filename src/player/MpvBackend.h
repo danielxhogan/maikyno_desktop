@@ -26,6 +26,9 @@ public:
     virtual void prev_s_stream() override;
     virtual void next_s_stream() override;
 
+    virtual void sub_pos_up() override;
+    virtual void sub_pos_down() override;
+
     int render_context_initialized() override;
 
 private:

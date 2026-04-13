@@ -16,6 +16,7 @@ public:
     int pending_src = 0;
     int v_stream_idx = -1;
     int a_stream_idx = -1;
+    int s_stream_idx = -1;
 
     virtual void load_src() = 0;
     virtual void pause_play() = 0;
@@ -30,6 +31,9 @@ public:
     virtual void next_a_stream() = 0;
     virtual void prev_s_stream() = 0;
     virtual void next_s_stream() = 0;
+
+    virtual void sub_pos_up() = 0;
+    virtual void sub_pos_down() = 0;
 
 protected:
     UpdateCallback update_cb = nullptr;

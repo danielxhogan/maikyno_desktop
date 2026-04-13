@@ -40,16 +40,6 @@ QString Player::get_src() const
     return backend->src;
 }
 
-int Player::get_v_stream_idx() const
-{
-    return backend->v_stream_idx;
-}
-
-int Player::get_a_stream_idx() const
-{
-    return backend->a_stream_idx;
-}
-
 void Player::set_src(const QString &src_prop)
 {
     if (src_prop == backend->src || src_prop.isEmpty())
@@ -63,12 +53,22 @@ void Player::set_src(const QString &src_prop)
     }
 }
 
+int Player::get_v_stream_idx() const
+{
+    return backend->v_stream_idx;
+}
+
 void Player::set_v_stream_idx(int v_stream_idx_prop)
 {
     if (v_stream_idx_prop == backend->v_stream_idx)
         return;
     backend->v_stream_idx = v_stream_idx_prop;
     emit v_stream_idx_changed();
+}
+
+int Player::get_a_stream_idx() const
+{
+    return backend->a_stream_idx;
 }
 
 void Player::set_a_stream_idx(int a_stream_idx_prop)
@@ -155,4 +155,14 @@ void Player::prev_s_stream()
 void Player::next_s_stream()
 {
     backend->next_s_stream();
+}
+
+void Player::sub_pos_up()
+{
+    backend->sub_pos_up();
+}
+
+void Player::sub_pos_down()
+{
+    backend->sub_pos_down();
 }

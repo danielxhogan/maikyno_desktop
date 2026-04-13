@@ -84,6 +84,16 @@ Item {
             onActivated: player.next_s_stream()
         }
 
+        Shortcut {
+            sequence: "u"
+            onActivated: player.sub_pos_up()
+        }
+
+        Shortcut {
+            sequence: "m"
+            onActivated: player.sub_pos_down()
+        }
+
         Column {
             id: osc
             anchors.top: parent.top
