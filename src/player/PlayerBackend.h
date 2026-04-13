@@ -24,6 +24,13 @@ public:
     virtual void next_chapter() = 0;
     virtual void prev_chapter() = 0;
 
+    virtual void prev_v_stream() = 0;
+    virtual void next_v_stream() = 0;
+    virtual void prev_a_stream() = 0;
+    virtual void next_a_stream() = 0;
+    virtual void prev_s_stream() = 0;
+    virtual void next_s_stream() = 0;
+
 protected:
     UpdateCallback update_cb = nullptr;
     void *update_ctx = nullptr;

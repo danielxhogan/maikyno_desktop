@@ -54,6 +54,36 @@ Item {
             onActivated: player.next_chapter()
         }
 
+        Shortcut {
+            sequence: "f"
+            onActivated: player.prev_v_stream()
+        }
+
+        Shortcut {
+            sequence: "j"
+            onActivated: player.next_v_stream()
+        }
+
+        Shortcut {
+            sequence: "d"
+            onActivated: player.prev_a_stream()
+        }
+
+        Shortcut {
+            sequence: "k"
+            onActivated: player.next_a_stream()
+        }
+
+        Shortcut {
+            sequence: "s"
+            onActivated: player.prev_s_stream()
+        }
+
+        Shortcut {
+            sequence: "l"
+            onActivated: player.next_s_stream()
+        }
+
         Column {
             id: osc
             anchors.top: parent.top

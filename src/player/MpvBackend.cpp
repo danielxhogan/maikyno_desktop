@@ -138,6 +138,57 @@ void MpvBackend::next_chapter()
     mpv_utils::command(mpv, next_chapter_cmd);
 }
 
+void MpvBackend::prev_v_stream()
+{
+    QVariantList prev_v_stream_cmd;
+    prev_v_stream_cmd.append("cycle");
+    prev_v_stream_cmd.append("video");
+    prev_v_stream_cmd.append("down");
+    mpv_utils::command(mpv, prev_v_stream_cmd);
+}
+
+void MpvBackend::next_v_stream()
+{
+    QVariantList next_v_stream_cmd;
+    next_v_stream_cmd.append("cycle");
+    next_v_stream_cmd.append("video");
+    mpv_utils::command(mpv, next_v_stream_cmd);
+}
+
+void MpvBackend::prev_a_stream()
+{
+    QVariantList prev_a_stream_cmd;
+    prev_a_stream_cmd.append("cycle");
+    prev_a_stream_cmd.append("audio");
+    prev_a_stream_cmd.append("down");
+    mpv_utils::command(mpv, prev_a_stream_cmd);
+}
+
+void MpvBackend::next_a_stream()
+{
+    QVariantList next_a_stream_cmd;
+    next_a_stream_cmd.append("cycle");
+    next_a_stream_cmd.append("audio");
+    mpv_utils::command(mpv, next_a_stream_cmd);
+}
+
+void MpvBackend::prev_s_stream()
+{
+    QVariantList prev_s_stream_cmd;
+    prev_s_stream_cmd.append("cycle");
+    prev_s_stream_cmd.append("sub");
+    prev_s_stream_cmd.append("down");
+    mpv_utils::command(mpv, prev_s_stream_cmd);
+}
+
+void MpvBackend::next_s_stream()
+{
+    QVariantList next_s_stream_cmd;
+    next_s_stream_cmd.append("cycle");
+    next_s_stream_cmd.append("sub");
+    mpv_utils::command(mpv, next_s_stream_cmd);
+}
+
 int MpvBackend::render_context_initialized()
 {
     if (mpv_render_ctx)

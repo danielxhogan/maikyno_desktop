@@ -55,8 +55,15 @@ public slots:
     void pause_play();
     void seek(double sec);
     void seek_start();
-    void next_chapter();
     void prev_chapter();
+    void next_chapter();
+
+    void prev_v_stream();
+    void next_v_stream();
+    void prev_a_stream();
+    void next_a_stream();
+    void prev_s_stream();
+    void next_s_stream();
 
 protected:
     QSGNode *updatePaintNode(QSGNode             *old_node,

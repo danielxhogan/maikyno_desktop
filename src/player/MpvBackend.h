@@ -19,6 +19,13 @@ public:
     virtual void next_chapter() override;
     virtual void prev_chapter() override;
 
+    virtual void prev_v_stream() override;
+    virtual void next_v_stream() override;
+    virtual void prev_a_stream() override;
+    virtual void next_a_stream() override;
+    virtual void prev_s_stream() override;
+    virtual void next_s_stream() override;
+
     int render_context_initialized() override;
 
 private:

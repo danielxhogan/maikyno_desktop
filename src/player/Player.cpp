@@ -126,3 +126,33 @@ void Player::next_chapter()
 {
     backend->next_chapter();
 }
+
+void Player::prev_v_stream()
+{
+    backend->prev_v_stream();
+}
+
+void Player::next_v_stream()
+{
+    backend->next_v_stream();
+}
+
+void Player::prev_a_stream()
+{
+    backend->prev_a_stream();
+}
+
+void Player::next_a_stream()
+{
+    backend->next_a_stream();
+}
+
+void Player::prev_s_stream()
+{
+    backend->prev_s_stream();
+}
+
+void Player::next_s_stream()
+{
+    backend->next_s_stream();
+}
