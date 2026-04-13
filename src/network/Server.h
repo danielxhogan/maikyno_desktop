@@ -9,6 +9,8 @@ class Server : public QObject {
     Q_PROPERTY(QString ip READ get_ip WRITE set_ip NOTIFY ip_changed)
     Q_PROPERTY(QVariantList libraries
         READ get_libraries NOTIFY libraries_changed);
+    Q_PROPERTY(QVariantList shows
+        READ get_shows NOTIFY shows_changed);
     Q_PROPERTY(QVariantList media_dirs
         READ get_media_dirs NOTIFY media_dirs_changed);
     Q_PROPERTY(QVariantList videos
@@ -19,6 +21,7 @@ public:
     QString get_ip() const;
     void set_ip(const QString &ip_prop);
     QVariantList get_libraries() const;
+    QVariantList get_shows() const;
     QVariantList get_media_dirs() const;
     QVariantList get_videos() const;
 
@@ -26,6 +29,7 @@ private:
     QString ip;
     QNetworkAccessManager *net_mgr;
     QVariantList libraries;
+    QVariantList shows;
     QVariantList media_dirs;
     QVariantList videos;
 
@@ -36,10 +40,11 @@ signals:
     void req_libraries_error(QString message);
     void libraries_changed();
 
-    void req_movies_success();
-    void req_movies_error(QString message);
     void req_shows_success();
     void req_shows_error(QString message);
+    void shows_changed();
+    void req_movies_success();
+    void req_movies_error(QString message);
     void media_dirs_changed();
 
     void req_videos_success();
@@ -50,10 +55,12 @@ public slots:
     void req_libraries(const QString &ip);
     void req_library_contents(const QString &library_id,
         const QString &media_type);
+    // void req_seasons(const QString &show_id);
     void req_videos(const QString &media_dir_id);
 
 private slots:
     void on_libraries_result(QNetworkReply *reply);
+    void on_shows_result(QNetworkReply *reply);
     void on_movies_result(QNetworkReply *reply);
     void on_videos_result(QNetworkReply *reply);
 };

@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 
 Item {
-    id: media_dir_root
+    id: shows_root
     property bool loading: false
 
     ScrollView {
@@ -10,23 +10,6 @@ Item {
         height: parent.height
         contentWidth: availableWidth
         contentHeight: main_col.implicitHeight + 60
-
-        Connections {
-            target: server
-
-            function onReq_videos_success()
-            {
-                media_dir_root.loading = false
-                media_dir_err_msg.text = ""
-                pages_stack.push(videos_component)
-            }
-
-            function onReq_videos_error(message)
-            {
-                media_dir_root.loading = false;
-                media_dir_err_msg.text = message
-            }
-        }
 
         Column {
             id: main_col
@@ -44,13 +27,13 @@ Item {
             Text {
                 id: title
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: "Select a movie"
+                text: "Select a Show"
                 font.bold: true
                 font.pixelSize: 24
             }
 
             Text {
-                id: media_dir_err_msg
+                id: libraries_err_msg
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: ""
             }
@@ -61,19 +44,20 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: 10
                 clip: true
-                model: server.media_dirs
+                model: server.shows
 
                 delegate: Button {
                     width: 250
                     height: 35
                     anchors.horizontalCenter: parent.horizontalCenter
                     text: modelData.name
-                    enabled: !media_dir_root.loading
+                    enabled: !shows_root.loading
                     onClicked: {
-                        media_dir_root.loading = true
-                        server.req_videos(modelData.id)
+                        shows_root.loading = true
+                        // server.req_seasons(modelData.id)
                     }
                 }
+
             }
         }
     }

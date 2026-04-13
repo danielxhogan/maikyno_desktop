@@ -77,6 +77,32 @@ void Server::req_library_contents(const QString &libary_id,
         connect(reply, &QNetworkReply::finished,
             this, [this, reply]() { on_movies_result(reply);});
     } else if (media_type == "show") {
+        QUrl url(QString("http://%1:8080/get_shows").arg(ip));
+        QNetworkRequest request(url);
+        request.setHeader(QNetworkRequest::ContentTypeHeader,
+            "application/json");
+        QString body = QString("{\"library_id\": \"%1\"}").arg(libary_id);
+        QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
+        connect(reply, &QNetworkReply::finished,
+            this, [this, reply]() { on_shows_result(reply);});
+    }
+}
+
+void Server::on_shows_result(QNetworkReply *reply)
+{
+    reply->deleteLater();
+    if (reply->error() != QNetworkReply::NoError) {
+        emit req_shows_error(reply->errorString());
+        return;
+    }
+
+    QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+    if (doc.isArray()) {
+        shows = doc.array().toVariantList();
+        emit shows_changed();
+        emit req_shows_success();
+    } else {
+        emit req_shows_error("Invalid data recieved from server.");
     }
 }
 
@@ -96,6 +122,11 @@ void Server::on_movies_result(QNetworkReply *reply)
     } else {
         emit req_movies_error("Invalid data recieved from server.");
     }
+}
+
+QVariantList Server::get_shows() const
+{
+    return shows;
 }
 
 QVariantList Server::get_videos() const

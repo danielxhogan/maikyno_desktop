@@ -14,6 +14,19 @@ Item {
         Connections {
             target: server
 
+            function onReq_shows_success()
+            {
+                libraries_root.loading = false
+                libraries_err_msg.text = ""
+                pages_stack.push(shows_component)
+            }
+
+            function onReq_shows_error(message)
+            {
+                connect_root.loading = false;
+                libraries_err_msg.text = message
+            }
+
             function onReq_movies_success()
             {
                 libraries_root.loading = false
@@ -64,7 +77,7 @@ Item {
                 model: server.libraries
 
                 delegate: Button {
-                    width: 175
+                    width: 250
                     height: 35
                     anchors.horizontalCenter: parent.horizontalCenter
                     text: modelData.name
@@ -77,11 +90,6 @@ Item {
                 }
 
             }
-
-            // Button {
-            //     text: "Movies library"
-                // onClicked: pages_stack.push(media_dir_component)
-            // }
         }
     }
 }

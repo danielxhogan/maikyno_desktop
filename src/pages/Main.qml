@@ -34,6 +34,10 @@ ApplicationWindow {
         LibrariesPage { id: libraries_page }
     }
     Component {
+        id: shows_component
+        ShowsPage { id: shows_page }
+    }
+    Component {
         id: media_dir_component
         MediaDirPage { id: media_dir_page }
     }
