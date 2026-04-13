@@ -23,7 +23,7 @@ Item {
 
             function onReq_shows_error(message)
             {
-                connect_root.loading = false;
+                libraries_root.loading = false;
                 libraries_err_msg.text = message
             }
 
@@ -36,7 +36,7 @@ Item {
 
             function onReq_movies_error(message)
             {
-                connect_root.loading = false;
+                libraries_root.loading = false;
                 libraries_err_msg.text = message
             }
         }

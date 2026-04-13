@@ -11,6 +11,23 @@ Item {
         contentWidth: availableWidth
         contentHeight: main_col.implicitHeight + 60
 
+        Connections {
+            target: server
+
+            function onReq_seasons_success()
+            {
+                shows_root.loading = false
+                shows_err_msg.text = ""
+                pages_stack.push(media_dir_component)
+            }
+
+            function onReq_seasons_error(message)
+            {
+                shows_root.loading = false;
+                shows_err_msg.text = message
+            }
+        }
+
         Column {
             id: main_col
             anchors.top: parent.top
@@ -33,7 +50,7 @@ Item {
             }
 
             Text {
-                id: libraries_err_msg
+                id: shows_err_msg
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: ""
             }
@@ -54,7 +71,7 @@ Item {
                     enabled: !shows_root.loading
                     onClicked: {
                         shows_root.loading = true
-                        // server.req_seasons(modelData.id)
+                        server.req_seasons(modelData.id)
                     }
                 }
 

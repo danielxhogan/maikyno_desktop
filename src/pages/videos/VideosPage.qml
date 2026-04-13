@@ -47,7 +47,7 @@ Item {
                 model: server.videos
 
                 delegate: Button {
-                    width: 175
+                    width: 250
                     height: 35
                     anchors.horizontalCenter: parent.horizontalCenter
                     text: modelData.name

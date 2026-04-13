@@ -59,11 +59,6 @@ void Server::on_libraries_result(QNetworkReply *reply)
     }
 }
 
-QVariantList Server::get_media_dirs() const
-{
-    return media_dirs;
-}
-
 void Server::req_library_contents(const QString &libary_id,
     const QString &media_type)
 {
@@ -88,6 +83,11 @@ void Server::req_library_contents(const QString &libary_id,
     }
 }
 
+QVariantList Server::get_shows() const
+{
+    return shows;
+}
+
 void Server::on_shows_result(QNetworkReply *reply)
 {
     reply->deleteLater();
@@ -103,6 +103,41 @@ void Server::on_shows_result(QNetworkReply *reply)
         emit req_shows_success();
     } else {
         emit req_shows_error("Invalid data recieved from server.");
+    }
+}
+
+void Server::req_seasons(const QString &show_id)
+{
+    QUrl url(QString("http://%1:8080/get_seasons").arg(ip));
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader,
+        "application/json");
+    QString body = QString("{\"show_id\": \"%1\"}").arg(show_id);
+    QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
+    connect(reply, &QNetworkReply::finished,
+        this, [this, reply]() { on_seasons_result(reply);});
+}
+
+QVariantList Server::get_media_dirs() const
+{
+    return media_dirs;
+}
+
+void Server::on_seasons_result(QNetworkReply *reply)
+{
+    reply->deleteLater();
+    if (reply->error() != QNetworkReply::NoError) {
+        emit req_seasons_error(reply->errorString());
+        return;
+    }
+
+    QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+    if (doc.isArray()) {
+        media_dirs = doc.array().toVariantList();
+        emit media_dirs_changed();
+        emit req_seasons_success();
+    } else {
+        emit req_seasons_error("Invalid data recieved from server.");
     }
 }
 
@@ -122,11 +157,6 @@ void Server::on_movies_result(QNetworkReply *reply)
     } else {
         emit req_movies_error("Invalid data recieved from server.");
     }
-}
-
-QVariantList Server::get_shows() const
-{
-    return shows;
 }
 
 QVariantList Server::get_videos() const
