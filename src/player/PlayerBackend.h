@@ -1,4 +1,5 @@
 #pragma once
+#include "network/Server.h"
 
 #include <QString>
 #include <QQuickWindow>
@@ -11,6 +12,8 @@ public:
     virtual void set_update_callback(UpdateCallback cb, void *ctx) = 0;
     virtual void render(int fbo_id, int width, int height) = 0;
     virtual int render_context_initialized() = 0;
+
+    Server *server;
 
     QString src = "";
     QString video_id = "";

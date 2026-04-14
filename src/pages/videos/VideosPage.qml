@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import Server
 
 Item {
     id: videos_root
@@ -44,7 +45,7 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: 10
                 clip: true
-                model: server.videos
+                model: Server.videos
 
                 delegate: Button {
                     width: 250

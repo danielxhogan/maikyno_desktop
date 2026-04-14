@@ -18,9 +18,10 @@ int main(int argc, char **argv)
   QObject::connect(&engine, &QQmlApplicationEngine::quit,
     &app, &QGuiApplication::quit);
 
+  Server *server = new Server(&app);
+  qmlRegisterSingletonInstance("Server", 1, 0, "Server", server);
   qmlRegisterType<Player>("Player", 1, 0, "Player");
-  qmlRegisterType<Server>("Server", 1, 0, "Server");
-  engine.loadFromModule("pages", "Main");
 
+  engine.loadFromModule("pages", "Main");
   return app.exec();
 }

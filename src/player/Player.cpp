@@ -35,6 +35,19 @@ void Player::on_update(void *ctx)
     emit player->new_frame();
 }
 
+Server *Player::get_server() const
+{
+    return backend->server;
+}
+
+void Player::set_server(Server *server_prop)
+{
+    if (server_prop == backend->server)
+        return;
+    backend->server = server_prop;
+    emit server_changed();
+}
+
 QString Player::get_src() const
 {
     return backend->src;

@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import Server
 
 Item {
     id: media_dir_root
@@ -12,16 +13,16 @@ Item {
         contentHeight: main_col.implicitHeight + 60
 
         Connections {
-            target: server
+            target: Server
 
-            function onReq_videos_success()
+            function onMedia_dirs_req_videos_success()
             {
                 media_dir_root.loading = false
                 media_dir_err_msg.text = ""
                 pages_stack.push(videos_component)
             }
 
-            function onReq_videos_error(message)
+            function onMedia_dirs_req_videos_error(message)
             {
                 media_dir_root.loading = false;
                 media_dir_err_msg.text = message
@@ -38,7 +39,9 @@ Item {
             spacing: 40
 
             Button {
-                text: "Back"; onClicked: pages_stack.pop();
+                text: "Back";
+                enabled: !media_dir_root.loading
+                onClicked: pages_stack.pop();
             }
 
             Text {
@@ -61,7 +64,7 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: 10
                 clip: true
-                model: server.media_dirs
+                model: Server.media_dirs
 
                 delegate: Button {
                     width: 250
@@ -69,9 +72,11 @@ Item {
                     anchors.horizontalCenter: parent.horizontalCenter
                     text: modelData.name
                     enabled: !media_dir_root.loading
+
                     onClicked: {
                         media_dir_root.loading = true
-                        server.req_videos(modelData.id)
+                        app.media_dir_id = modelData.id
+                        Server.req_videos(modelData.id, "media_dirs")
                     }
                 }
             }

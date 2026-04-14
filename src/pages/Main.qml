@@ -1,6 +1,5 @@
 import QtQuick
 import QtQuick.Controls
-import Server
 
 ApplicationWindow {
     id: app
@@ -8,15 +7,16 @@ ApplicationWindow {
     height: 900
     visible: true
     title: qsTr("maikyno")
-    property string src;
+
+    property string media_dir_id;
     property string video_id;
+
+    property string src;
     property string ts;
     property string a_stream_idx;
     property string v_stream_idx;
     property string s_stream_idx;
     property string s_pos;
-
-    Server { id: server }
 
     StackView {
         id: pages_stack

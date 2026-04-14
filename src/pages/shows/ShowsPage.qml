@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import Server
 
 Item {
     id: shows_root
@@ -12,7 +13,7 @@ Item {
         contentHeight: main_col.implicitHeight + 60
 
         Connections {
-            target: server
+            target: Server
 
             function onReq_seasons_success()
             {
@@ -61,7 +62,7 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: 10
                 clip: true
-                model: server.shows
+                model: Server.shows
 
                 delegate: Button {
                     width: 250
@@ -71,7 +72,7 @@ Item {
                     enabled: !shows_root.loading
                     onClicked: {
                         shows_root.loading = true
-                        server.req_seasons(modelData.id)
+                        Server.req_seasons(modelData.id)
                     }
                 }
 

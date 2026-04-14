@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import Server
 
 Item {
     id: libraries_root
@@ -12,7 +13,7 @@ Item {
         contentHeight: main_col.implicitHeight + 60
 
         Connections {
-            target: server
+            target: Server
 
             function onReq_shows_success()
             {
@@ -74,7 +75,7 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: 10
                 clip: true
-                model: server.libraries
+                model: Server.libraries
 
                 delegate: Button {
                     width: 250
@@ -84,7 +85,7 @@ Item {
                     enabled: !libraries_root.loading
                     onClicked: {
                         libraries_root.loading = true
-                        server.req_library_contents(modelData.id,
+                        Server.req_library_contents(modelData.id,
                             modelData.media_type)
                     }
                 }

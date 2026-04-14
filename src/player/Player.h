@@ -33,6 +33,10 @@ class Player : public QQuickItem {
         READ get_s_pos WRITE set_s_pos
         NOTIFY s_pos_changed);
 
+    Q_PROPERTY(Server *server
+        READ get_server WRITE set_server
+        NOTIFY server_changed);
+
 public:
     explicit Player(QQuickItem *parent = nullptr);
     virtual ~Player() = default;
@@ -58,6 +62,8 @@ public:
     void set_s_stream_idx(int set_s_stream_idx_prop);
     int get_s_pos() const;
     void set_s_pos(int set_s_pos_prop);
+    Server *get_server() const;
+    void set_server(Server *set_server_prop);
 
 private:
     std::unique_ptr<PlayerBackend> backend;
@@ -74,6 +80,7 @@ signals:
     void a_stream_idx_changed();
     void s_stream_idx_changed();
     void s_pos_changed();
+    void server_changed();
 
 public slots:
     void pause_play();

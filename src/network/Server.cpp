@@ -71,7 +71,8 @@ void Server::req_library_contents(const QString &libary_id,
         QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
         connect(reply, &QNetworkReply::finished,
             this, [this, reply]() { on_movies_result(reply); });
-    } else if (media_type == "show") {
+    }
+    else if (media_type == "show") {
         QUrl url(QString("http://%1:8080/get_shows").arg(ip));
         QNetworkRequest request(url);
         request.setHeader(QNetworkRequest::ContentTypeHeader,
@@ -164,22 +165,28 @@ QVariantList Server::get_videos() const
     return videos;
 }
 
-void Server::req_videos(const QString &media_dir_id)
+void Server::req_videos(const QString &media_dir_id, const QString &callee)
 {
     QUrl url(QString("http://%1:8080/get_videos").arg(ip));
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     QString body = QString("{\"media_dir_id\": \"%1\"}").arg(media_dir_id);
     QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
-    connect(reply, &QNetworkReply::finished,
-        this, [this, reply]() { on_videos_result(reply); });
+
+    if (callee == "media_dirs") {
+        connect(reply, &QNetworkReply::finished,
+            this, [this, reply]() { on_media_dirs_videos_result(reply); });
+    } else if (callee == "player") {
+        connect(reply, &QNetworkReply::finished,
+            this, [this, reply]() { on_player_videos_result(reply); });
+    }
 }
 
-void Server::on_videos_result(QNetworkReply *reply)
+void Server::on_media_dirs_videos_result(QNetworkReply *reply)
 {
     reply->deleteLater();
     if (reply->error() != QNetworkReply::NoError) {
-        emit req_videos_error(reply->errorString());
+        emit media_dirs_req_videos_error(reply->errorString());
         return;
     }
 
@@ -187,9 +194,27 @@ void Server::on_videos_result(QNetworkReply *reply)
     if (doc.isArray()) {
         videos = doc.array().toVariantList();
         emit videos_changed();
-        emit req_videos_success();
+        emit media_dirs_req_videos_success();
     } else {
-        emit req_videos_error("Invalid data recieved from server.");
+        emit media_dirs_req_videos_error("Invalid data recieved from server.");
+    }
+}
+
+void Server::on_player_videos_result(QNetworkReply *reply)
+{
+    reply->deleteLater();
+    if (reply->error() != QNetworkReply::NoError) {
+        emit player_req_videos_error(reply->errorString());
+        return;
+    }
+
+    QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+    if (doc.isArray()) {
+        videos = doc.array().toVariantList();
+        emit videos_changed();
+        emit player_req_videos_success();
+    } else {
+        emit player_req_videos_error("Invalid data recieved from server.");
     }
 }
 

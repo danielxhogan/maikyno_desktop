@@ -1,6 +1,5 @@
 #include "MpvBackend.h"
 #include "mpv_utils.h"
-#include "network/Server.h"
 
 #include <QOpenGLContext>
 
@@ -247,6 +246,5 @@ void MpvBackend::save_state()
         .s_pos = sub_pos.toInt()
     };
 
-    Server *server = new Server();
     server->update_video_playback_state(&update_params);
 }

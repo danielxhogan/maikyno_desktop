@@ -1,13 +1,21 @@
 import QtQuick
 import QtQuick.Controls
 import Player
+import Server
 
 Item {
+    id: player_root
+    property bool loading: false
+
     Rectangle {
         anchors.fill: parent
 
         Player {
             id: player
+            anchors.fill: parent
+
+            server: Server
+
             src: app.src
             video_id: app.video_id
             ts: app.ts
@@ -15,7 +23,33 @@ Item {
             a_stream_idx: app.a_stream_idx
             s_stream_idx: app.s_stream_idx
             s_pos: app.s_pos
-            anchors.fill: parent
+        }
+
+        Connections {
+            target: Server
+
+            function onSave_state_success()
+            {
+                Server.req_videos(app.media_dir_id, "player");
+            }
+
+            function onSave_state_error(message)
+            {
+                player_root.loading = false
+                pages_stack.pop()
+            }
+
+            function onPlayer_req_videos_success()
+            {
+                player_root.loading = false
+                pages_stack.pop()
+            }
+
+            function onPlayer_req_videos_error(message)
+            {
+                player_root.loading = false
+                pages_stack.pop()
+            }
         }
 
         Column {
@@ -27,9 +61,11 @@ Item {
 
             Button {
                 text: "Back";
+                enabled: !player_root.loading
+
                 onClicked: {
+                    player_root.loading = true
                     player.save_state();
-                    pages_stack.pop();
                 }
             }
         }

@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import Server
 
 Item {
     id: connect_root
@@ -12,13 +13,13 @@ Item {
         contentHeight: main_col.implicitHeight + 60
 
         Connections {
-            target: server
+            target: Server
 
             function onReq_libraries_success()
             {
                 connect_root.loading = false
                 connect_err_msg.text = ""
-                server.ip = ip_field.text
+                Server.ip = ip_field.text
                 pages_stack.push(libraries_component)
             }
 
@@ -53,7 +54,7 @@ Item {
             TextField {
                 id: ip_field;
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: server.ip
+                text: Server.ip
             }
 
             Button {
@@ -62,7 +63,7 @@ Item {
                 enabled: !connect_root.loading
                 onClicked: {
                     connect_root.loading = true
-                    server.req_libraries(ip_field.text)
+                    Server.req_libraries(ip_field.text)
                 }
             }
         }
