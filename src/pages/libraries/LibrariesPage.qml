@@ -31,7 +31,7 @@ Item {
             {
                 libraries_root.loading = false
                 libraries_err_msg.text = ""
-                pages_stack.push(media_dir_component)
+                pages_stack.push(media_dirs_component)
             }
 
             function onReq_movies_error(message)

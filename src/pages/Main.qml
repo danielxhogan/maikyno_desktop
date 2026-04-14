@@ -42,8 +42,8 @@ ApplicationWindow {
         ShowsPage { id: shows_page }
     }
     Component {
-        id: media_dir_component
-        MediaDirPage { id: media_dir_page }
+        id: media_dirs_component
+        MediaDirsPage { id: media_dirs_page }
     }
     Component {
         id: videos_component

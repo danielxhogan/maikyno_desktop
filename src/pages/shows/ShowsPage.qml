@@ -18,7 +18,7 @@ Item {
             {
                 shows_root.loading = false
                 shows_err_msg.text = ""
-                pages_stack.push(media_dir_component)
+                pages_stack.push(media_dirs_component)
             }
 
             function onReq_seasons_error(message)

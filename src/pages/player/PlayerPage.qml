@@ -18,6 +18,22 @@ Item {
             anchors.fill: parent
         }
 
+        Column {
+            id: osc
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.topMargin: 20
+            anchors.leftMargin: 20
+
+            Button {
+                text: "Back";
+                onClicked: {
+                    player.save_state();
+                    pages_stack.pop();
+                }
+            }
+        }
+
         Shortcut {
             sequence: "Space"
             onActivated: player.pause_play()
@@ -96,22 +112,6 @@ Item {
         Shortcut {
             sequence: "m"
             onActivated: player.sub_pos_down()
-        }
-
-        Column {
-            id: osc
-            anchors.top: parent.top
-            anchors.left: parent.left
-            anchors.topMargin: 20
-            anchors.leftMargin: 20
-
-            Button {
-                text: "Back";
-                onClicked: {
-                    player.save_state();
-                    pages_stack.pop();
-                }
-            }
         }
     }
 }
