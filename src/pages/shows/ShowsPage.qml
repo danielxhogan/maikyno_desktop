@@ -15,10 +15,24 @@ Item {
         Connections {
             target: Server
 
+            function onScan_library_success()
+            {
+                shows_root.loading = false;
+                shows_err_msg.text = ""
+                Server.req_library_contents(app.library_id, "show")
+            }
+
+            function onScan_library_error(message)
+            {
+                shows_root.loading = false;
+                shows_err_msg.text = message
+            }
+
             function onReq_seasons_success()
             {
                 shows_root.loading = false
                 shows_err_msg.text = ""
+                app.movie_library = false
                 pages_stack.push(media_dirs_component)
             }
 
@@ -54,6 +68,18 @@ Item {
                 id: shows_err_msg
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: ""
+            }
+
+            Button {
+                width: 250
+                height: 35
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: "Scan Library"
+                enabled: !shows_root.loading
+                onClicked: {
+                    shows_root.loading = true
+                    Server.scan_library(app.library_id)
+                }
             }
 
             ListView {

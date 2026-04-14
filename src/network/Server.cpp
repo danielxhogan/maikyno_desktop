@@ -160,6 +160,28 @@ void Server::on_movies_result(QNetworkReply *reply)
     }
 }
 
+void Server::scan_library(const QString &library_id)
+{
+    QUrl url(QString("http://%1:8080/scan_library").arg(ip));
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader,
+        "application/json");
+    QString body = QString("{\"library_id\": \"%1\"}").arg(library_id);
+    QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
+    connect(reply, &QNetworkReply::finished,
+        this, [this, reply]() { on_scan_library_result(reply);});
+}
+
+void Server::on_scan_library_result(QNetworkReply *reply)
+{
+    reply->deleteLater();
+    if (reply->error() != QNetworkReply::NoError) {
+        emit scan_library_error(reply->errorString());
+        return;
+    }
+    emit scan_library_success();
+}
+
 QVariantList Server::get_videos() const
 {
     return videos;
@@ -221,9 +243,9 @@ void Server::on_player_videos_result(QNetworkReply *reply)
 void Server::update_video_playback_state(UpdateVideoPlaybackStateParams *params)
 {
     QUrl url(QString("http://%1:8080/update_video_playback_state").arg(ip));
-
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
     QString body = QString("{\
         \"video_id\": \"%1\",\
         \"ts\": %2,\
@@ -239,7 +261,6 @@ void Server::update_video_playback_state(UpdateVideoPlaybackStateParams *params)
         .arg(params->s_pos);
 
     QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
-
     connect(reply, &QNetworkReply::finished,
         this, [this, reply]() { on_save_state_result(reply); });
 }

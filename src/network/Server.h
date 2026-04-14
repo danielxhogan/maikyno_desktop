@@ -66,6 +66,9 @@ signals:
     void req_movies_error(QString message);
     void media_dirs_changed();
 
+    void scan_library_success();
+    void scan_library_error(QString message);
+
     void media_dirs_req_videos_success();
     void media_dirs_req_videos_error(QString message);
     void player_req_videos_success();
@@ -79,6 +82,7 @@ public slots:
     void req_libraries(const QString &ip);
     void req_library_contents(const QString &library_id,
         const QString &media_type);
+    void scan_library(const QString &library_id);
     void req_seasons(const QString &show_id);
     void req_videos(const QString &media_dir_id, const QString &callee);
 
@@ -87,6 +91,7 @@ private slots:
     void on_shows_result(QNetworkReply *reply);
     void on_seasons_result(QNetworkReply *reply);
     void on_movies_result(QNetworkReply *reply);
+    void on_scan_library_result(QNetworkReply *reply);
     void on_media_dirs_videos_result(QNetworkReply *reply);
     void on_player_videos_result(QNetworkReply *reply);
     void on_save_state_result(QNetworkReply *reply);

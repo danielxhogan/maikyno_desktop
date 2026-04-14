@@ -32,6 +32,7 @@ Item {
             {
                 libraries_root.loading = false
                 libraries_err_msg.text = ""
+                app.movie_library = true
                 pages_stack.push(media_dirs_component)
             }
 
@@ -83,8 +84,10 @@ Item {
                     anchors.horizontalCenter: parent.horizontalCenter
                     text: modelData.name
                     enabled: !libraries_root.loading
+
                     onClicked: {
                         libraries_root.loading = true
+                        app.library_id = modelData.id
                         Server.req_library_contents(modelData.id,
                             modelData.media_type)
                     }

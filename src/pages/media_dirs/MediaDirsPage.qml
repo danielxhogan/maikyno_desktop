@@ -3,7 +3,7 @@ import QtQuick.Controls
 import Server
 
 Item {
-    id: media_dir_root
+    id: media_dirs_root
     property bool loading: false
 
     ScrollView {
@@ -15,16 +15,28 @@ Item {
         Connections {
             target: Server
 
+            function onScan_library_success()
+            {
+                media_dirs_root.loading = false
+                media_dir_err_msg.text = "Library successfully scanned"
+            }
+
+            function onScan_library_error(message)
+            {
+                media_dirs_root.loading = false;
+                media_dir_err_msg.text = message
+            }
+
             function onMedia_dirs_req_videos_success()
             {
-                media_dir_root.loading = false
+                media_dirs_root.loading = false
                 media_dir_err_msg.text = ""
                 pages_stack.push(videos_component)
             }
 
             function onMedia_dirs_req_videos_error(message)
             {
-                media_dir_root.loading = false;
+                media_dirs_root.loading = false;
                 media_dir_err_msg.text = message
             }
         }
@@ -40,7 +52,7 @@ Item {
 
             Button {
                 text: "Back";
-                enabled: !media_dir_root.loading
+                enabled: !media_dirs_root.loading
                 onClicked: pages_stack.pop();
             }
 
@@ -58,6 +70,21 @@ Item {
                 text: ""
             }
 
+            Button {
+                visible: app.movie_library
+                width: 250
+                height: 35
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: "Scan Library"
+                enabled: !media_dirs_root.loading
+                onClicked: {
+                    media_dirs_root.loading = true
+                media_dir_err_msg.text = "Scanning library"
+                    Server.scan_library(app.library_id)
+                }
+            }
+
+
             ListView {
                 width: parent.width
                 height: contentHeight
@@ -71,10 +98,10 @@ Item {
                     height: 35
                     anchors.horizontalCenter: parent.horizontalCenter
                     text: modelData.name
-                    enabled: !media_dir_root.loading
+                    enabled: !media_dirs_root.loading
 
                     onClicked: {
-                        media_dir_root.loading = true
+                        media_dirs_root.loading = true
                         app.media_dir_id = modelData.id
                         Server.req_videos(modelData.id, "media_dirs")
                     }

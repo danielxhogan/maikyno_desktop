@@ -8,6 +8,8 @@ ApplicationWindow {
     visible: true
     title: qsTr("maikyno")
 
+    property string library_id;
+    property bool movie_library;
     property string media_dir_id;
     property string video_id;
 
