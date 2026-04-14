@@ -38,7 +38,7 @@ void Server::req_libraries(const QString &ip)
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     QNetworkReply *reply = net_mgr->post(request, "{}");
     connect(reply, &QNetworkReply::finished,
-        this, [this, reply]() { on_libraries_result(reply);});
+        this, [this, reply]() { on_libraries_result(reply); });
 }
 
 void Server::on_libraries_result(QNetworkReply *reply)
@@ -70,7 +70,7 @@ void Server::req_library_contents(const QString &libary_id,
         QString body = QString("{\"library_id\": \"%1\"}").arg(libary_id);
         QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
         connect(reply, &QNetworkReply::finished,
-            this, [this, reply]() { on_movies_result(reply);});
+            this, [this, reply]() { on_movies_result(reply); });
     } else if (media_type == "show") {
         QUrl url(QString("http://%1:8080/get_shows").arg(ip));
         QNetworkRequest request(url);
@@ -79,7 +79,7 @@ void Server::req_library_contents(const QString &libary_id,
         QString body = QString("{\"library_id\": \"%1\"}").arg(libary_id);
         QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
         connect(reply, &QNetworkReply::finished,
-            this, [this, reply]() { on_shows_result(reply);});
+            this, [this, reply]() { on_shows_result(reply); });
     }
 }
 
@@ -172,7 +172,7 @@ void Server::req_videos(const QString &media_dir_id)
     QString body = QString("{\"media_dir_id\": \"%1\"}").arg(media_dir_id);
     QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
     connect(reply, &QNetworkReply::finished,
-        this, [this, reply]() { on_videos_result(reply);});
+        this, [this, reply]() { on_videos_result(reply); });
 }
 
 void Server::on_videos_result(QNetworkReply *reply)
@@ -191,4 +191,40 @@ void Server::on_videos_result(QNetworkReply *reply)
     } else {
         emit req_videos_error("Invalid data recieved from server.");
     }
+}
+
+void Server::update_video_playback_state(UpdateVideoPlaybackStateParams *params)
+{
+    QUrl url(QString("http://%1:8080/update_video_playback_state").arg(ip));
+
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QString body = QString("{\
+        \"video_id\": \"%1\",\
+        \"ts\": %2,\
+        \"v_stream\": %3,\
+        \"a_stream\": %4,\
+        \"s_stream\": %5,\
+        \"s_pos\": %6}")
+        .arg(params->video_id.toUtf8().data())
+        .arg(params->ts - 10)
+        .arg(params->v_stream)
+        .arg(params->a_stream)
+        .arg(params->s_stream)
+        .arg(params->s_pos);
+
+    QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
+
+    connect(reply, &QNetworkReply::finished,
+        this, [this, reply]() { on_save_state_result(reply); });
+}
+
+void Server::on_save_state_result(QNetworkReply *reply)
+{
+    reply->deleteLater();
+    if (reply->error() != QNetworkReply::NoError) {
+        emit save_state_error(reply->errorString());
+        return;
+    }
+    emit save_state_success();
 }

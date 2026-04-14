@@ -29,6 +29,8 @@ public:
     virtual void sub_pos_up() override;
     virtual void sub_pos_down() override;
 
+    virtual void save_state() override;
+
     int render_context_initialized() override;
 
 private:

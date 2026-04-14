@@ -53,6 +53,32 @@ void Player::set_src(const QString &src_prop)
     }
 }
 
+QString Player::get_video_id() const
+{
+    return backend->video_id;
+}
+
+void Player::set_video_id(const QString &video_id_prop)
+{
+    if (video_id_prop == backend->video_id || video_id_prop.isEmpty())
+        return;
+    backend->video_id = video_id_prop;
+    emit video_id_changed();
+}
+
+int Player::get_ts() const
+{
+    return backend->ts;
+}
+
+void Player::set_ts(int ts_prop)
+{
+    if (ts_prop == backend->ts)
+        return;
+    backend->ts = ts_prop;
+    emit ts_changed();
+}
+
 int Player::get_v_stream_idx() const
 {
     return backend->v_stream_idx;
@@ -77,6 +103,32 @@ void Player::set_a_stream_idx(int a_stream_idx_prop)
         return;
     backend->a_stream_idx = a_stream_idx_prop;
     emit a_stream_idx_changed();
+}
+
+int Player::get_s_stream_idx() const
+{
+    return backend->s_stream_idx;
+}
+
+void Player::set_s_stream_idx(int s_stream_idx_prop)
+{
+    if (s_stream_idx_prop == backend->s_stream_idx)
+        return;
+    backend->s_stream_idx = s_stream_idx_prop;
+    emit s_stream_idx_changed();
+}
+
+int Player::get_s_pos() const
+{
+    return backend->s_pos;
+}
+
+void Player::set_s_pos(int s_pos_prop)
+{
+    if (s_pos_prop == backend->s_pos)
+        return;
+    backend->s_pos = s_pos_prop;
+    emit s_pos_changed();
 }
 
 QSGNode *Player::updatePaintNode(QSGNode             *old_node,
@@ -165,4 +217,9 @@ void Player::sub_pos_up()
 void Player::sub_pos_down()
 {
     backend->sub_pos_down();
+}
+
+void Player::save_state()
+{
+    backend->save_state();
 }

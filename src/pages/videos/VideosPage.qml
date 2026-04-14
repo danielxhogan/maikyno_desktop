@@ -53,8 +53,12 @@ Item {
                     text: modelData.name
                     onClicked: {
                         app.src = "http://192.168.1.209:8080/media/" + modelData.static_path
-                        app.v_stream_idx = -1
-                        app.a_stream_idx = -1
+                        app.video_id = modelData.id
+                        app.ts = modelData.ts
+                        app.v_stream_idx = modelData.v_stream
+                        app.a_stream_idx = modelData.a_stream
+                        app.s_stream_idx = modelData.s_stream
+                        app.s_pos = modelData.s_pos
                         pages_stack.push(player_component)
                     }
                 }

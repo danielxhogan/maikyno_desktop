@@ -9,8 +9,12 @@ ApplicationWindow {
     visible: true
     title: qsTr("maikyno")
     property string src;
+    property string video_id;
+    property string ts;
     property string a_stream_idx;
     property string v_stream_idx;
+    property string s_stream_idx;
+    property string s_pos;
 
     Server { id: server }
 

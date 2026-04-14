@@ -13,10 +13,15 @@ public:
     virtual int render_context_initialized() = 0;
 
     QString src = "";
+    QString video_id = "";
+    int ts = 0;
+    int v_stream_idx = 1;
+    int a_stream_idx = 1;
+    int s_stream_idx = 1;
+    int s_pos = 100;
+
     int pending_src = 0;
-    int v_stream_idx = -1;
-    int a_stream_idx = -1;
-    int s_stream_idx = -1;
+    int pending_seek = 1;
 
     virtual void load_src() = 0;
     virtual void pause_play() = 0;
@@ -34,6 +39,11 @@ public:
 
     virtual void sub_pos_up() = 0;
     virtual void sub_pos_down() = 0;
+
+    virtual void save_state() = 0;
+
+signals:
+    void state_saved();
 
 protected:
     UpdateCallback update_cb = nullptr;

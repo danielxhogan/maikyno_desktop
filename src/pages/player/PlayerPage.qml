@@ -9,8 +9,12 @@ Item {
         Player {
             id: player
             src: app.src
+            video_id: app.video_id
+            ts: app.ts
             v_stream_idx: app.v_stream_idx
             a_stream_idx: app.a_stream_idx
+            s_stream_idx: app.s_stream_idx
+            s_pos: app.s_pos
             anchors.fill: parent
         }
 
@@ -102,7 +106,11 @@ Item {
             anchors.leftMargin: 20
 
             Button {
-                text: "Back"; onClicked: pages_stack.pop();
+                text: "Back";
+                onClicked: {
+                    player.save_state();
+                    pages_stack.pop();
+                }
             }
         }
     }

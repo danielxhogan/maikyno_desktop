@@ -205,6 +205,16 @@ static inline bool is_error(const QVariant &v)
     return get_error(v) < 0;
 }
 
+static inline QVariant get_property(mpv_handle *ctx, const QString &name)
+{
+    mpv_node node;
+    int err = mpv_get_property(ctx, name.toUtf8().data(), MPV_FORMAT_NODE, &node);
+    if (err < 0)
+        return QVariant::fromValue(ErrorReturn(err));
+    node_autofree f(&node);
+    return node_to_variant(&node);
+}
+
 static inline int set_property(mpv_handle *ctx, const QString &name, const QVariant &v)
 {
     node_builder node(v);

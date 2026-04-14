@@ -1,5 +1,6 @@
 #include "MpvBackend.h"
 #include "mpv_utils.h"
+#include "network/Server.h"
 
 #include <QOpenGLContext>
 
@@ -67,6 +68,16 @@ void MpvBackend::render(int fbo_id, int width, int height)
             pending_src = 0;
         }
     }
+    if (pending_seek) {
+        QVariantList seek_cmd;
+        seek_cmd.append("seek");
+        QString sec_str = QString::number(ts);
+        seek_cmd.append(sec_str);
+        QVariant ret = mpv_utils::command(mpv, seek_cmd);
+        if (ret.userType() == 0) {
+            pending_seek = 0;
+        }
+    }
 
     mpv_opengl_fbo fbo{
         .fbo = fbo_id,
@@ -87,9 +98,14 @@ void MpvBackend::load_src()
 {
     if (src.isEmpty())
         return;
-    QVariant loadfile = "loadfile";
+
+    mpv_utils::set_property(mpv, "vid", v_stream_idx);
+    mpv_utils::set_property(mpv, "aid", a_stream_idx);
+    mpv_utils::set_property(mpv, "sid", s_stream_idx);
+    mpv_utils::set_property(mpv, "sub-pos", s_pos);
+
     QVariantList loadfile_cmd;
-    loadfile_cmd.append(loadfile);
+    loadfile_cmd.append("loadfile");
     loadfile_cmd.append(src);
     mpv_utils::command(mpv, loadfile_cmd);
 }
@@ -212,4 +228,25 @@ int MpvBackend::render_context_initialized()
     if (mpv_render_ctx)
         return 1;
     return 0;
+}
+
+void MpvBackend::save_state()
+{
+    QVariant current_ts = mpv_utils::get_property(mpv, QString("time-pos"));
+    QVariant vid = mpv_utils::get_property(mpv, QString("vid"));
+    QVariant aid = mpv_utils::get_property(mpv, QString("aid"));
+    QVariant sid = mpv_utils::get_property(mpv, QString("sid"));
+    QVariant sub_pos = mpv_utils::get_property(mpv, "sub-pos");
+
+    UpdateVideoPlaybackStateParams update_params = {
+        .video_id = video_id,
+        .ts = current_ts.toInt(),
+        .v_stream = vid.toInt(),
+        .a_stream = aid.toInt(),
+        .s_stream = sid.toInt(),
+        .s_pos = sub_pos.toInt()
+    };
+
+    Server *server = new Server();
+    server->update_video_playback_state(&update_params);
 }
