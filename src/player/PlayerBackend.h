@@ -1,5 +1,5 @@
 #pragma once
-#include "network/Server.h"
+#include "../network/Server.h"
 
 #include <QString>
 #include <QQuickWindow>
