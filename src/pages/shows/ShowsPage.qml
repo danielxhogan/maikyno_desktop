@@ -59,7 +59,7 @@ Item {
             Text {
                 id: title
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: "Select a Show"
+                text: app.library_name
                 font.bold: true
                 font.pixelSize: 24
             }
@@ -98,6 +98,7 @@ Item {
                     enabled: !shows_root.loading
                     onClicked: {
                         shows_root.loading = true
+                        app.show_name = modelData.name
                         Server.req_seasons(modelData.id)
                     }
                 }

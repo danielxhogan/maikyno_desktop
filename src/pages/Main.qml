@@ -9,8 +9,11 @@ ApplicationWindow {
     title: qsTr("maikyno")
 
     property string library_id;
+    property string library_name;
     property bool movie_library;
+    property string show_name;
     property string media_dir_id;
+    property string media_dir_name;
     property string video_id;
 
     property string src;

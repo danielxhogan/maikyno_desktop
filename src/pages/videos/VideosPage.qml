@@ -19,7 +19,7 @@ Item {
             anchors.topMargin: 20
             anchors.leftMargin: 20
             width: parent.width
-            spacing: 40
+            spacing: 20
 
             Button {
                 text: "Back"; onClicked: pages_stack.pop();
@@ -28,7 +28,7 @@ Item {
             Text {
                 id: title
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: "Play a video"
+                text: app.movie_library ? app.media_dir_name : app.show_name + " " + app.media_dir_name
                 font.bold: true
                 font.pixelSize: 24
             }
@@ -36,6 +36,8 @@ Item {
             Text {
                 id: media_dir_err_msg
                 anchors.horizontalCenter: parent.horizontalCenter
+                font.bold: true
+                font.pixelSize: 16
                 text: ""
             }
 
@@ -60,7 +62,7 @@ Item {
                         anchors.horizontalCenter: parent.horizontalCenter
 
                         onClicked: {
-                            app.src = "http://192.168.1.209:8080/media/" + modelData.static_path
+                            app.src = "http://" + Server.ip + ":8080/media/" + modelData.static_path
                             app.video_id = modelData.id
                             app.ts = modelData.ts
                             app.v_stream_idx = modelData.v_stream
@@ -71,6 +73,14 @@ Item {
                         }
                     }
                 }
+            }
+
+            Text {
+                id: extras
+                text: "extras"
+                font.bold: true
+                font.pixelSize: 16
+                anchors.horizontalCenter: parent.horizontalCenter
             }
 
             ListView {
@@ -94,7 +104,7 @@ Item {
                         anchors.horizontalCenter: parent.horizontalCenter
 
                         onClicked: {
-                            app.src = "http://192.168.1.209:8080/media/" + modelData.static_path
+                            app.src = "http://" + Server.ip + ":8080/media/" + modelData.static_path
                             app.video_id = modelData.id
                             app.ts = modelData.ts
                             app.v_stream_idx = modelData.v_stream

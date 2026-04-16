@@ -59,7 +59,7 @@ Item {
             Text {
                 id: title
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: "Select a movie"
+                text: app.movie_library ? app.library_name : app.show_name
                 font.bold: true
                 font.pixelSize: 24
             }
@@ -103,6 +103,7 @@ Item {
                     onClicked: {
                         media_dirs_root.loading = true
                         app.media_dir_id = modelData.id
+                        app.media_dir_name = modelData.name
                         Server.req_videos(modelData.id, "media_dirs")
                     }
                 }

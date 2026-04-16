@@ -59,7 +59,7 @@ Item {
             Text {
                 id: title
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: "Select a library"
+                text: "Libraries"
                 font.bold: true
                 font.pixelSize: 24
             }
@@ -88,6 +88,7 @@ Item {
                     onClicked: {
                         libraries_root.loading = true
                         app.library_id = modelData.id
+                        app.library_name = modelData.name
                         Server.req_library_contents(modelData.id,
                             modelData.media_type)
                     }
