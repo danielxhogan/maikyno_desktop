@@ -13,3 +13,5 @@ add_subdirectory(src)
 include(GNUInstallDirs)
 install(TARGETS mkd
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+install(FILES maikyno.desktop DESTINATION $ENV{HOME}/.local/share/applications)

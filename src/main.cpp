@@ -11,8 +11,8 @@ int main(int argc, char **argv)
   QGuiApplication app(argc, argv);
   std::setlocale(LC_NUMERIC, "C");
 
-  QCoreApplication::setApplicationName("maikyno");
-  QCoreApplication::setOrganizationName("maikyno");
+  QCoreApplication::setApplicationName("maikyno_desktop");
+  QCoreApplication::setOrganizationName("maikyno_desktop");
 
   QQmlApplicationEngine engine;
   QObject::connect(&engine, &QQmlApplicationEngine::quit,

@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=maikyno desktop
+Exec=LD_LIBRARY_PATH="/usr/local/bin/6.10.2/gcc_64/lib:$HOME/programs/prebuilt/vulkan/1.4.335.0/x86_64/lib:$HOME/programs/compiled/install/lib:/lib" /home/hugexjackedman/programs/compiled/install/bin/mkd
+Terminal=false
+StartupWMClass=maikyno_desktop
