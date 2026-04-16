@@ -44,9 +44,69 @@ void MkpBackend::seek(double sec)
 
 }
 
+void MkpBackend::seek_start()
+{
+
+}
+
+void MkpBackend::prev_chapter()
+{
+
+}
+
+void MkpBackend::next_chapter()
+{
+
+}
+
+void MkpBackend::prev_v_stream()
+{
+
+}
+
+void MkpBackend::next_v_stream()
+{
+
+}
+
+void MkpBackend::prev_a_stream()
+{
+
+}
+
+void MkpBackend::next_a_stream()
+{
+
+}
+
+void MkpBackend::prev_s_stream()
+{
+
+}
+
+void MkpBackend::next_s_stream()
+{
+
+}
+
+void MkpBackend::sub_pos_up()
+{
+
+}
+
+void MkpBackend::sub_pos_down()
+{
+
+}
+
 int MkpBackend::render_context_initialized()
 {
     if (player)
         return 1;
     return 0;
+}
+
+void MkpBackend::save_state()
+{
+
 }
