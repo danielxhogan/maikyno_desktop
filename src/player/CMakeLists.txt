@@ -1,3 +1,5 @@
+option(USE_MKP_BACKEND "Use the custom mkp library instead of mpv" OFF)
+
 if(USE_MKP_BACKEND)
     message(STATUS "Building with MKP backend")
     qt_add_library(mkp_backend STATIC
@@ -7,7 +9,6 @@ if(USE_MKP_BACKEND)
 
     pkg_check_modules(LIBMKP REQUIRED IMPORTED_TARGET libmkp)
     target_link_libraries(mkp_backend PRIVATE
-        Qt6::Core
         Qt6::Quick
         PkgConfig::LIBMKP
     )
@@ -23,7 +24,6 @@ else()
 
     pkg_check_modules(MPV REQUIRED IMPORTED_TARGET mpv)
     target_link_libraries(mpv_backend PRIVATE
-        Qt6::Core
         Qt6::Quick
         PkgConfig::MPV
     )

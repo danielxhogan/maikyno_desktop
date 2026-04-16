@@ -13,13 +13,12 @@ qt_add_qml_module(mkd
         "pages/shows/ShowsPage.qml"
         "pages/media_dirs/MediaDirsPage.qml"
         "pages/videos/VideosPage.qml"
+        "pages/videos/ConfiguratorPage.qml"
         "pages/player/PlayerPage.qml"
 )
 
 target_link_libraries(mkd PRIVATE
-    Qt6::Core
     Qt6::Quick
 )
 
-option(USE_MKP_BACKEND "Use the custom mkp library instead of mpv" OFF)
 add_subdirectory(player)

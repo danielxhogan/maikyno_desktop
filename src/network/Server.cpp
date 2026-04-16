@@ -274,3 +274,38 @@ void Server::on_save_state_result(QNetworkReply *reply)
     }
     emit save_state_success();
 }
+
+QVariantList Server::get_video_streams() const
+{
+    return video_streams;
+}
+
+void Server::req_video_streams(const QString &media_dir_id)
+{
+    QUrl url(QString("http://%1:8080/scan_media_streams").arg(ip));
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QString body = QString("{\"media_dir_id\": \"%1\"}").arg(media_dir_id);
+    QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
+
+        connect(reply, &QNetworkReply::finished,
+            this, [this, reply]() { on_video_streams_result(reply); });
+}
+
+void Server::on_video_streams_result(QNetworkReply *reply)
+{
+    reply->deleteLater();
+    if (reply->error() != QNetworkReply::NoError) {
+        emit req_video_streams_error(reply->errorString());
+        return;
+    }
+
+    QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+    if (doc.isArray()) {
+        video_streams = doc.array().toVariantList();
+        emit video_streams_changed();
+        emit req_video_streams_success();
+    } else {
+        emit req_video_streams_error("Invalid data recieved from server.");
+    }
+}

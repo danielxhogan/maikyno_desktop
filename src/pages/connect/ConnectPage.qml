@@ -6,29 +6,29 @@ Item {
     id: connect_root
     property bool loading: false
 
+    Connections {
+        target: Server
+
+        function onReq_libraries_success()
+        {
+            connect_root.loading = false
+            connect_err_msg.text = ""
+            Server.ip = ip_field.text
+            pages_stack.push(libraries_component)
+        }
+
+        function onReq_libraries_error(message)
+        {
+            connect_root.loading = false
+            connect_err_msg.text = message
+        }
+    }
+
     ScrollView {
         width: parent.width
         height: parent.height
         contentWidth: availableWidth
         contentHeight: main_col.implicitHeight + 60
-
-        Connections {
-            target: Server
-
-            function onReq_libraries_success()
-            {
-                connect_root.loading = false
-                connect_err_msg.text = ""
-                Server.ip = ip_field.text
-                pages_stack.push(libraries_component)
-            }
-
-            function onReq_libraries_error(message)
-            {
-                connect_root.loading = false
-                connect_err_msg.text = message
-            }
-        }
 
         Column {
             id: main_col

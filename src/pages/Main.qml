@@ -55,6 +55,10 @@ ApplicationWindow {
         VideosPage { id: videos_page }
     }
     Component {
+        id: configurator_component
+        ConfiguratorPage { id: configurator_page }
+    }
+    Component {
         id: player_component
         PlayerPage { id: player_page }
     }

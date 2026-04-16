@@ -6,40 +6,52 @@ Item {
     id: libraries_root
     property bool loading: false
 
+    Connections {
+        target: Server
+
+        function onReq_shows_success()
+        {
+            libraries_root.loading = false
+            libraries_err_msg.text = ""
+            app.movie_library = false
+            pages_stack.push(shows_component)
+        }
+
+        function onReq_shows_error(message)
+        {
+            libraries_root.loading = false;
+            libraries_err_msg.text = message
+        }
+
+        function onReq_movies_success()
+        {
+            libraries_root.loading = false
+            libraries_err_msg.text = ""
+            app.movie_library = true
+            pages_stack.push(media_dirs_component)
+        }
+
+        function onReq_movies_error(message)
+        {
+            libraries_root.loading = false;
+            libraries_err_msg.text = message
+        }
+    }
+
     ScrollView {
         width: parent.width
         height: parent.height
         contentWidth: availableWidth
         contentHeight: main_col.implicitHeight + 60
 
-        Connections {
-            target: Server
+        Item {
+            anchors.fill: parent
+            anchors.margins: 20
 
-            function onReq_shows_success()
-            {
-                libraries_root.loading = false
-                libraries_err_msg.text = ""
-                pages_stack.push(shows_component)
-            }
-
-            function onReq_shows_error(message)
-            {
-                libraries_root.loading = false;
-                libraries_err_msg.text = message
-            }
-
-            function onReq_movies_success()
-            {
-                libraries_root.loading = false
-                libraries_err_msg.text = ""
-                app.movie_library = true
-                pages_stack.push(media_dirs_component)
-            }
-
-            function onReq_movies_error(message)
-            {
-                libraries_root.loading = false;
-                libraries_err_msg.text = message
+            Button {
+                text: "Back";
+                anchors.left: parent.left
+                onClicked: pages_stack.pop();
             }
         }
 
@@ -51,10 +63,6 @@ Item {
             anchors.leftMargin: 20
             width: parent.width
             spacing: 40
-
-            Button {
-                text: "Back"; onClicked: pages_stack.pop();
-            }
 
             Text {
                 id: title

@@ -15,19 +15,22 @@ typedef struct UpdateVideoPlaybackStateParams {
 
 class Server : public QObject {
     Q_OBJECT
-    Q_PROPERTY( QString ip READ get_ip WRITE set_ip NOTIFY ip_changed)
+    Q_PROPERTY(QString ip READ get_ip WRITE set_ip NOTIFY ip_changed)
 
-    Q_PROPERTY( QVariantList libraries
+    Q_PROPERTY(QVariantList libraries
         READ get_libraries NOTIFY libraries_changed);
 
-    Q_PROPERTY( QVariantList shows
+    Q_PROPERTY(QVariantList shows
         READ get_shows NOTIFY shows_changed);
 
-    Q_PROPERTY( QVariantList media_dirs
+    Q_PROPERTY(QVariantList media_dirs
         READ get_media_dirs NOTIFY media_dirs_changed);
 
-    Q_PROPERTY( QVariantList videos
+    Q_PROPERTY(QVariantList videos
         READ get_videos NOTIFY videos_changed);
+
+    Q_PROPERTY(QVariantList video_streams
+        READ get_video_streams NOTIFY video_streams_changed);
 
 public:
     explicit Server(QObject *parent = nullptr);
@@ -38,6 +41,7 @@ public:
     QVariantList get_media_dirs() const;
     QVariantList get_videos() const;
     void update_video_playback_state(UpdateVideoPlaybackStateParams *params);
+    QVariantList get_video_streams() const;
 
 private:
     QString ip;
@@ -46,6 +50,7 @@ private:
     QVariantList shows;
     QVariantList media_dirs;
     QVariantList videos;
+    QVariantList video_streams;
 
 signals:
     void ip_changed();
@@ -78,6 +83,10 @@ signals:
     void save_state_success();
     void save_state_error(QString message);
 
+    void video_streams_changed();
+    void req_video_streams_success();
+    void req_video_streams_error(QString message);
+
 public slots:
     void req_libraries(const QString &ip);
     void req_library_contents(const QString &library_id,
@@ -85,6 +94,7 @@ public slots:
     void scan_library(const QString &library_id);
     void req_seasons(const QString &show_id);
     void req_videos(const QString &media_dir_id, const QString &callee);
+    void req_video_streams(const QString &media_dir_id);
 
 private slots:
     void on_libraries_result(QNetworkReply *reply);
@@ -95,4 +105,5 @@ private slots:
     void on_media_dirs_videos_result(QNetworkReply *reply);
     void on_player_videos_result(QNetworkReply *reply);
     void on_save_state_result(QNetworkReply *reply);
+    void on_video_streams_result(QNetworkReply *reply);
 };
