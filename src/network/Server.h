@@ -87,6 +87,9 @@ signals:
     void req_video_streams_success();
     void req_video_streams_error(QString message);
 
+    void process_media_success();
+    void process_media_error(QString message);
+
 public slots:
     void req_libraries(const QString &ip);
     void req_library_contents(const QString &library_id,
@@ -95,6 +98,7 @@ public slots:
     void req_seasons(const QString &show_id);
     void req_videos(const QString &media_dir_id, const QString &callee);
     void req_video_streams(const QString &media_dir_id);
+    void process_media(const QJsonObject &process_media_info);
 
 private slots:
     void on_libraries_result(QNetworkReply *reply);
@@ -106,4 +110,5 @@ private slots:
     void on_player_videos_result(QNetworkReply *reply);
     void on_save_state_result(QNetworkReply *reply);
     void on_video_streams_result(QNetworkReply *reply);
+    void on_process_media_result(QNetworkReply *reply);
 };

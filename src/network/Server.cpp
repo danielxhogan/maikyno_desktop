@@ -288,8 +288,8 @@ void Server::req_video_streams(const QString &media_dir_id)
     QString body = QString("{\"media_dir_id\": \"%1\"}").arg(media_dir_id);
     QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
 
-        connect(reply, &QNetworkReply::finished,
-            this, [this, reply]() { on_video_streams_result(reply); });
+    connect(reply, &QNetworkReply::finished,
+        this, [this, reply]() { on_video_streams_result(reply); });
 }
 
 void Server::on_video_streams_result(QNetworkReply *reply)
@@ -308,4 +308,26 @@ void Server::on_video_streams_result(QNetworkReply *reply)
     } else {
         emit req_video_streams_error("Invalid data recieved from server.");
     }
+}
+
+void Server::process_media(const QJsonObject &process_media_info)
+{
+    QUrl url(QString("http://%1:8080/process_media").arg(ip));
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QString body = QJsonDocument(process_media_info).toJson(QJsonDocument::Compact);
+    QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
+
+    connect(reply, &QNetworkReply::finished,
+        this, [this, reply]() { on_process_media_result(reply); });
+}
+
+void Server::on_process_media_result(QNetworkReply *reply)
+{
+    reply->deleteLater();
+    if (reply->error() != QNetworkReply::NoError) {
+        emit process_media_error(reply->errorString());
+        return;
+    }
+    emit process_media_success();
 }

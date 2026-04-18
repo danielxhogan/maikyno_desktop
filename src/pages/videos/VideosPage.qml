@@ -106,7 +106,6 @@ Item {
                         anchors.horizontalCenter: parent.horizontalCenter
 
                         onClicked: {
-                            videos_root.loading = true
                             app.src = "http://" + Server.ip + ":8080/media/"
                                 + modelData.static_path
 

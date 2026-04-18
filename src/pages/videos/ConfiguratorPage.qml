@@ -61,11 +61,11 @@ Item {
 
                     process_video_info.audio_streams.push({
                         "id": stream.id,
-                        "title": lossless ? null : "Stereo",
+                        "title": lossless ? stream.title : "Stereo",
                         "passthrough": lossless ? true : false,
                         "gain_boost": 8,
                         "create_renditions": false,
-                        "title2": null,
+                        "title2": "Stereo",
                         "gain_boost2": 0,
                         "ignore": false
                     })
@@ -73,7 +73,7 @@ Item {
                     idx_map.push(process_video_info.subtitle_streams.length)
                     process_video_info.subtitle_streams.push({
                         "id": stream.id,
-                        "title": null,
+                        "title": stream.title,
                         "burn_in": false,
                         "ignore": false
                     })
@@ -92,6 +92,22 @@ Item {
 
     Component.onCompleted: {
         initialize_cfg_state();
+    }
+
+    Connections {
+        target: Server
+
+        function onProcess_media_success()
+        {
+            configurator_root.loading = false
+            configurator_err_msg.text = "Processing Media"
+        }
+
+        function onProcess_media_error(message)
+        {
+            configurator_root.loading = false
+            configurator_err_msg.text = message
+        }
     }
 
     ScrollView {
@@ -120,7 +136,7 @@ Item {
 
                 onClicked: {
                     configurator_root.loading = true
-                    // Server.req_process_media(configurator_root.cfg_state);
+                    Server.process_media(configurator_root.cfg_state);
                 }
             }
         }
@@ -150,6 +166,14 @@ Item {
                     : app.show_name + " " + app.media_dir_name
                 font.bold: true
                 font.pixelSize: 28
+            }
+
+            Text {
+                id: configurator_err_msg
+                anchors.horizontalCenter: parent.horizontalCenter
+                font.bold: true
+                font.pixelSize: 16
+                text: ""
             }
 
             ListView {
@@ -637,7 +661,7 @@ Item {
                                         visible: modelData.stream_type != 3
                                         height: modelData.stream_type == 3
                                             ? 0
-                                            : contentHeight
+                                            : contentHeight + 5
 
                                         text: modelData.stream_type == 0
                                             ? cfg_state
