@@ -21,7 +21,8 @@ Item {
                 "title": video_streams_element.video.suggested_title,
                 "video_stream": null,
                 "audio_streams": [],
-                "subtitle_streams": []
+                "subtitle_streams": [],
+                "ignore": false
             }
 
             let found_v_stream = false
@@ -136,7 +137,58 @@ Item {
 
             onClicked: {
                 configurator_root.loading = true
-                Server.process_media(configurator_root.cfg_state);
+
+                let filtered_cfg_state = {
+                    "media_dir_id": app.media_dir_id,
+                    videos: []
+                }
+
+                for (let i = 0; i < cfg_state.videos.length; i++) {
+                    let video = cfg_state.videos[i]
+                    if (video.ignore) { continue }
+
+                    let new_video = {
+                        "video_id": video.video_id,
+                        "title": video.title,
+                        "video_stream": video.video_stream,
+                        "audio_streams": [],
+                        "subtitle_streams": []
+                    }
+
+                    for (let j = 0; j < video.audio_streams.length; j++) {
+                        let audio_stream = video.audio_streams[j]
+                        if (audio_stream.ignore) { continue }
+
+                        let new_audio_stream = {
+                            "id": audio_stream.id,
+                            "title": audio_stream.title,
+                            "passthrough": audio_stream.passthrough,
+                            "gain_boost": audio_stream.gain_boost,
+                            "create_renditions": audio_stream.create_renditions,
+                            "title2": audio_stream.title2,
+                            "gain_boost2": audio_stream.gain_boost2
+                        }
+
+                        new_video.audio_streams.push(new_audio_stream)
+                    }
+
+                    for (let j = 0; j < video.subtitle_streams.length; j++) {
+                        let subtitle_stream = video.subtitle_streams[j]
+                        if (subtitle_stream.ignore) { continue }
+
+                        let new_subtitle_stream = {
+                            "id": subtitle_stream.id,
+                            "title": subtitle_stream.title,
+                            "burn_in": subtitle_stream.burn_in,
+                        }
+
+                        new_video.subtitle_streams.push(new_subtitle_stream)
+                    }
+
+                    filtered_cfg_state.videos.push(new_video)
+                }
+
+                Server.process_media(filtered_cfg_state);
             }
         }
     }
@@ -189,11 +241,23 @@ Item {
 
         readonly property int video_idx: index
 
-    Text {
-        text: modelData.video.name
-        height: contentHeight + 10
-        font.bold: true
-        font.pixelSize: 24
+    Row {
+        spacing: 20
+
+        Text {
+            text: modelData.video.name
+            height: contentHeight + 10
+            font.bold: true
+            font.pixelSize: 24
+        }
+
+        CheckBox {
+            scale: 1.5
+            checked: !cfg_state.videos[video_idx].ignore
+            onCheckedChanged: {
+                cfg_state.videos[video_idx].ignore = !checked
+            }
+        }
     }
 
     Row {
@@ -228,6 +292,8 @@ Item {
         readonly property int stream_idx: index
 
     Row {
+        spacing: 20
+
         Text {
             text: "Stream "  + modelData.stream_idx
             height: contentHeight + 5
@@ -236,7 +302,7 @@ Item {
         }
 
         Text {
-            text: "    Title: " + modelData.title
+            text: "Title: " + modelData.title
             visible: modelData.title
             width: modelData.title ? contentWidth : 0
             font.bold: true
@@ -244,13 +310,13 @@ Item {
         }
 
         Text {
-            text: "    Codec: "  + modelData.codec
+            text: "Codec: "  + modelData.codec
             font.bold: true
             font.pixelSize: 20
         }
 
         Text {
-            text: "    Height: "  + modelData.height
+            text: "Height: "  + modelData.height
             visible: modelData.height
             width: modelData.height ? contentWidth : 0
             font.bold: true
@@ -258,7 +324,7 @@ Item {
         }
 
         Text {
-            text: "    Width: "  + modelData.width
+            text: "Width: "  + modelData.width
             visible: modelData.width
             width: modelData.width ? contentWidth : 0
             font.bold: true
@@ -266,16 +332,52 @@ Item {
         }
 
         Text {
-            text: "    Interlaced"
+            text: "Interlaced"
             visible: modelData.interlaced
             width: modelData.interlaced ? contentWidth : 0
             font.bold: true
             font.pixelSize: 20
         }
+
+        CheckBox {
+            scale: 1.5
+            visible: modelData.stream_type != 0
+            height: modelData.stream_type == 0
+                ? 0
+                : parent.height
+
+            checked: modelData.stream_type == 1
+                ? !cfg_state
+                    .videos[video_idx]
+                    .audio_streams[idx_maps[video_idx][stream_idx]]
+                    .ignore
+                : modelData.stream_type == 3
+                ? !cfg_state
+                    .videos[video_idx]
+                    .subtitle_streams[idx_maps[video_idx][stream_idx]]
+                    .ignore
+                : false
+
+            onCheckedChanged: {
+                if (modelData.stream_type == 1) {
+                    cfg_state
+                        .videos[video_idx]
+                        .audio_streams[idx_maps[video_idx][stream_idx]]
+                        .ignore
+                        = !checked
+                } else if (modelData.stream_type == 3) {
+                    cfg_state
+                        .videos[video_idx]
+                        .subtitle_streams[idx_maps[video_idx][stream_idx]]
+                        .ignore
+                        = !checked
+                }
+            }
+        }
     }
 
     Row {
-        spacing: 10
+        spacing: 5
 
         Text {
             text: "New Title"
@@ -338,6 +440,7 @@ Item {
         }
 
         CheckBox {
+            scale: 1.5
             visible: modelData.stream_type != 3
             height: modelData.stream_type == 3
                 ? 0
@@ -374,7 +477,7 @@ Item {
     }
 
     Row {
-        spacing: 10
+        spacing: 5
 
         Text {
             text: "Codec"
@@ -441,6 +544,7 @@ Item {
         }
 
         CheckBox {
+            scale: 1.5
             visible: modelData.stream_type == 0
             height: modelData.stream_type == 0
                 ? parent.height
@@ -475,6 +579,7 @@ Item {
         }
 
         CheckBox {
+            scale: 1.5
             visible: modelData.stream_type == 0
             height: modelData.stream_type == 0
                 ? parent.height
@@ -496,7 +601,7 @@ Item {
     }
 
     Row {
-        spacing: 10
+        spacing: 5
 
         Text {
             text: "Boost Gain"
@@ -557,6 +662,7 @@ Item {
         }
 
         CheckBox {
+            scale: 1.5
             visible: modelData.stream_type == 3
             height: modelData.stream_type == 3
                 ? parent.height
@@ -593,6 +699,7 @@ Item {
         }
 
         CheckBox {
+            scale: 1.5
             visible: modelData.stream_type != 3
             height: modelData.stream_type == 3
                 ? 0
@@ -640,7 +747,7 @@ Item {
     }
 
     Row {
-        spacing: 10
+        spacing: 5
 
         Text {
             text: "New Title"
@@ -691,7 +798,7 @@ Item {
     }
 
     Row {
-        spacing: 10
+        spacing: 5
 
         Text {
             text: "Codec"
@@ -758,6 +865,7 @@ Item {
         }
 
         CheckBox {
+            scale: 1.5
             visible: modelData.stream_type == 0
             height: modelData.stream_type == 0
                 ? parent.height
@@ -779,7 +887,7 @@ Item {
     }
 
     Row {
-        spacing: 10
+        spacing: 5
 
         Text {
             text: "Boost Gain"
