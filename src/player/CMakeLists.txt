@@ -6,7 +6,6 @@ if(USE_MKP_BACKEND)
         "MkpBackend.cpp"
     )
 
-
     pkg_check_modules(LIBMKP REQUIRED IMPORTED_TARGET libmkp)
     target_link_libraries(mkp_backend PRIVATE
         Qt6::Quick
@@ -32,4 +31,3 @@ else()
     target_compile_definitions(mpv_backend INTERFACE USE_MPV)
     target_link_libraries(mkd PRIVATE mpv_backend)
 endif()
-

@@ -36,7 +36,7 @@ Item {
             anchors.margins: 20
 
             Button {
-                text: "Back";
+                text: "Back"
                 enabled: !videos_root.loading
                 anchors.left: parent.left
                 onClicked: pages_stack.pop();
@@ -152,7 +152,6 @@ Item {
                         anchors.horizontalCenter: parent.horizontalCenter
 
                         onClicked: {
-                            videos_root.loading = true
                             app.src = "http://" + Server.ip + ":8080/media/"
                                 + modelData.static_path
 
