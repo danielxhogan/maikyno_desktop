@@ -41,7 +41,7 @@ Item {
 
                     process_video_info.video_stream = {
                         "id": stream.id,
-                        "title": uhd ? "4K" : null,
+                        "title": uhd ? "4K" : stream.title,
                         "passthrough": false,
                         "codec": codecs["h265"],
                         "hwaccel": uhd ? false : true,
@@ -49,7 +49,7 @@ Item {
                         "create_renditions": uhd ? true : false,
                         "title2": uhd ? "HD" : null,
                         "codec2": codecs["h265"],
-                        "hwaccel2": true,
+                        "hwaccel2": uhd ? true : false,
                         "tonemap": true
                     }
                 } else if (stream.stream_type == 1) {
@@ -60,14 +60,18 @@ Item {
                         || stream.codec == "Dolby TrueHD"
                         || stream.codec == "Dolby TrueHD + Dolby Atmos"
 
+                    let surround = stream.nb_channels > 2
+
+                    let second_rendition = surround && !lossless
+
                     process_video_info.audio_streams.push({
                         "id": stream.id,
-                        "title": lossless ? stream.title : "Stereo",
+                        "title": surround ? stream.title : "Stereo",
                         "passthrough": lossless ? true : false,
-                        "gain_boost": 8,
-                        "create_renditions": false,
-                        "title2": "Stereo",
-                        "gain_boost2": 0,
+                        "gain_boost": surround ? 0 : 8,
+                        "create_renditions": second_rendition,
+                        "title2": second_rendition ? "Stereo" : "",
+                        "gain_boost2": second_rendition ? 6 : 0,
                         "ignore": false
                     })
                 } else if (stream.stream_type == 3) {
