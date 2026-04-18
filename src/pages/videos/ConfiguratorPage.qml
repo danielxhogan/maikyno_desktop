@@ -256,7 +256,9 @@ Item {
         }
 
         CheckBox {
+            id: include_video
             scale: 1.5
+            enabled: !configurator_root.loading
             checked: !cfg_state.videos[video_idx].ignore
             onCheckedChanged: {
                 cfg_state.videos[video_idx].ignore = !checked
@@ -268,13 +270,14 @@ Item {
         spacing: 10
 
         Text {
-            text: " New Title"
+            text: "New Title"
             height: contentHeight + 25
             font.bold: true
             font.pixelSize: 16
         }
 
         TextField {
+            enabled: !configurator_root.loading && include_video.checked
             text: cfg_state.videos[video_idx].title
             width: 300
 
@@ -344,6 +347,8 @@ Item {
         }
 
         CheckBox {
+            id: include_stream
+            enabled: !configurator_root.loading && include_video.checked
             scale: 1.5
             visible: modelData.stream_type != 0
             height: modelData.stream_type == 0
@@ -360,7 +365,7 @@ Item {
                     .videos[video_idx]
                     .subtitle_streams[idx_maps[video_idx][stream_idx]]
                     .ignore
-                : false
+                : true
 
             onCheckedChanged: {
                 if (modelData.stream_type == 1) {
@@ -391,6 +396,10 @@ Item {
         }
 
         TextField {
+            enabled: !configurator_root.loading
+                && include_video.checked
+                && include_stream.checked
+
             text: modelData.stream_type == 0
                 ? cfg_state
                     .videos[video_idx]
@@ -444,6 +453,10 @@ Item {
         }
 
         CheckBox {
+            enabled: !configurator_root.loading
+                && include_video.checked
+                && include_stream.checked
+
             scale: 1.5
             visible: modelData.stream_type != 3
             height: modelData.stream_type == 3
@@ -496,6 +509,10 @@ Item {
         }
 
         ComboBox {
+            enabled: !configurator_root.loading
+                && include_video.checked
+                && include_stream.checked
+
             visible: modelData.stream_type == 0
             height: modelData.stream_type == 0
                 ? parent.height
@@ -548,6 +565,10 @@ Item {
         }
 
         CheckBox {
+            enabled: !configurator_root.loading
+                && include_video.checked
+                && include_stream.checked
+
             scale: 1.5
             visible: modelData.stream_type == 0
             height: modelData.stream_type == 0
@@ -583,6 +604,10 @@ Item {
         }
 
         CheckBox {
+            enabled: !configurator_root.loading
+                && include_video.checked
+                && include_stream.checked
+
             scale: 1.5
             visible: modelData.stream_type == 0
             height: modelData.stream_type == 0
@@ -620,6 +645,10 @@ Item {
         }
 
         SpinBox {
+            enabled: !configurator_root.loading
+                && include_video.checked
+                && include_stream.checked
+
             visible: modelData.stream_type == 1
             height: modelData.stream_type == 1
                 ? parent.height
@@ -666,6 +695,10 @@ Item {
         }
 
         CheckBox {
+            enabled: !configurator_root.loading
+                && include_video.checked
+                && include_stream.checked
+
             scale: 1.5
             visible: modelData.stream_type == 3
             height: modelData.stream_type == 3
@@ -703,6 +736,11 @@ Item {
         }
 
         CheckBox {
+            id: create_renditions
+            enabled: !configurator_root.loading
+                && include_video.checked
+                && include_stream.checked
+
             scale: 1.5
             visible: modelData.stream_type != 3
             height: modelData.stream_type == 3
@@ -766,6 +804,11 @@ Item {
         }
 
         TextField {
+            enabled: !configurator_root.loading
+                && include_video.checked
+                && include_stream.checked
+                && create_renditions.checked
+
             visible: modelData.stream_type != 3
             height: modelData.stream_type == 3
                 ? 0
@@ -817,6 +860,11 @@ Item {
         }
 
         ComboBox {
+            enabled: !configurator_root.loading
+                && include_video.checked
+                && include_stream.checked
+                && create_renditions.checked
+
             visible: modelData.stream_type == 0
             height: modelData.stream_type == 0
                 ? parent.height
@@ -869,6 +917,11 @@ Item {
         }
 
         CheckBox {
+            enabled: !configurator_root.loading
+                && include_video.checked
+                && include_stream.checked
+                && create_renditions.checked
+
             scale: 1.5
             visible: modelData.stream_type == 0
             height: modelData.stream_type == 0
@@ -906,6 +959,11 @@ Item {
         }
 
         SpinBox {
+            enabled: !configurator_root.loading
+                && include_video.checked
+                && include_stream.checked
+                && create_renditions.checked
+
             visible: modelData.stream_type == 1
             height: modelData.stream_type == 1
                 ? parent.height
