@@ -93,29 +93,45 @@ Item {
 
                 delegate: Item {
                     visible: !modelData.extra
-                    width: modelData.extra ? 0 : 250
+                    width: modelData.extra ? 0 : 375
                     height: modelData.extra ? 0 : 45
                     anchors.horizontalCenter: parent.horizontalCenter
 
-                    Button {
-                        text: modelData.name
-                        enabled: !videos_root.loading
-                        visible: !modelData.extra
-                        width: modelData.extra ? 0 : 250
-                        height: modelData.extra ? 0 : 35
+                    Item {
+                        anchors.fill: parent
                         anchors.horizontalCenter: parent.horizontalCenter
 
-                        onClicked: {
-                            app.src = "http://" + Server.ip + ":8080/media/"
-                                + modelData.static_path
+                        Button {
+                            text: modelData.name
+                            enabled: !videos_root.loading
+                            visible: !modelData.extra
+                            width: modelData.extra ? 0 : 250
+                            height: modelData.extra ? 0 : 35
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            // anchors.left: parent.left
 
-                            app.video_id = modelData.id
-                            app.ts = modelData.ts
-                            app.v_stream_idx = modelData.v_stream
-                            app.a_stream_idx = modelData.a_stream
-                            app.s_stream_idx = modelData.s_stream
-                            app.s_pos = modelData.s_pos
-                            pages_stack.push(player_component)
+                            onClicked: {
+                                app.src = "http://" + Server.ip + ":8080/media/"
+                                    + modelData.static_path
+
+                                app.video_id = modelData.id
+                                app.ts = modelData.ts
+                                app.v_stream_idx = modelData.v_stream
+                                app.a_stream_idx = modelData.a_stream
+                                app.s_stream_idx = modelData.s_stream
+                                app.s_pos = modelData.s_pos
+                                pages_stack.push(player_component)
+                            }
+                        }
+
+                        Text {
+                            text: modelData.pct_watched
+                                ? modelData.pct_watched + "%"
+                                : " "
+
+                            font.bold: true
+                            font.pixelSize: 20
+                            anchors.right: parent.right
                         }
                     }
                 }
@@ -138,29 +154,45 @@ Item {
 
                 delegate: Item {
                     visible: modelData.extra
-                    width: modelData.extra ? 250 : 0
+                    width: modelData.extra ? 375 : 0
                     height: modelData.extra ? 45 : 0
                     anchors.horizontalCenter: parent.horizontalCenter
 
-                    Button {
-                        text: modelData.name
-                        enabled: !videos_root.loading
-                        visible: modelData.extra
-                        width: modelData.extra ? 250 : 0
-                        height: modelData.extra ? 35 : 0
+                    Item {
+                        anchors.fill: parent
                         anchors.horizontalCenter: parent.horizontalCenter
 
-                        onClicked: {
-                            app.src = "http://" + Server.ip + ":8080/media/"
-                                + modelData.static_path
+                        Button {
+                            text: modelData.name
+                            enabled: !videos_root.loading
+                            visible: modelData.extra
+                            width: modelData.extra ? 250 : 0
+                            height: modelData.extra ? 35 : 0
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            // anchors.left: parent.left
 
-                            app.video_id = modelData.id
-                            app.ts = modelData.ts
-                            app.v_stream_idx = modelData.v_stream
-                            app.a_stream_idx = modelData.a_stream
-                            app.s_stream_idx = modelData.s_stream
-                            app.s_pos = modelData.s_pos
-                            pages_stack.push(player_component)
+                            onClicked: {
+                                app.src = "http://" + Server.ip + ":8080/media/"
+                                    + modelData.static_path
+
+                                app.video_id = modelData.id
+                                app.ts = modelData.ts
+                                app.v_stream_idx = modelData.v_stream
+                                app.a_stream_idx = modelData.a_stream
+                                app.s_stream_idx = modelData.s_stream
+                                app.s_pos = modelData.s_pos
+                                pages_stack.push(player_component)
+                            }
+                        }
+
+                        Text {
+                            text: modelData.pct_watched
+                                ? modelData.pct_watched + "%"
+                                : " "
+
+                            font.bold: true
+                            font.pixelSize: 20
+                            anchors.right: parent.right
                         }
                     }
                 }
