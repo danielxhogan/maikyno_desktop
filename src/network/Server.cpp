@@ -60,7 +60,7 @@ void Server::on_libraries_result(QNetworkReply *reply)
 }
 
 void Server::req_library_contents(const QString &libary_id,
-    const QString &media_type)
+    const QString &media_type, const QString &callee)
 {
     if (media_type == "movie") {
         QUrl url(QString("http://%1:8080/get_movies").arg(ip));
@@ -69,8 +69,14 @@ void Server::req_library_contents(const QString &libary_id,
             "application/json");
         QString body = QString("{\"library_id\": \"%1\"}").arg(libary_id);
         QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
-        connect(reply, &QNetworkReply::finished,
-            this, [this, reply]() { on_movies_result(reply); });
+
+        if (callee == "libraries") {
+            connect(reply, &QNetworkReply::finished,
+                this, [this, reply]() { on_initial_movies_result(reply); });
+        } else if (callee == "movies") {
+            connect(reply, &QNetworkReply::finished,
+                this, [this, reply]() { on_post_scan_movies_result(reply); });
+        }
     }
     else if (media_type == "show") {
         QUrl url(QString("http://%1:8080/get_shows").arg(ip));
@@ -79,8 +85,14 @@ void Server::req_library_contents(const QString &libary_id,
             "application/json");
         QString body = QString("{\"library_id\": \"%1\"}").arg(libary_id);
         QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
-        connect(reply, &QNetworkReply::finished,
-            this, [this, reply]() { on_shows_result(reply); });
+
+        if (callee == "libraries") {
+            connect(reply, &QNetworkReply::finished,
+                this, [this, reply]() { on_initial_shows_result(reply); });
+        } else if (callee == "shows") {
+            connect(reply, &QNetworkReply::finished,
+                this, [this, reply]() { on_post_scan_shows_result(reply); });
+        }
     }
 }
 
@@ -89,11 +101,11 @@ QVariantList Server::get_shows() const
     return shows;
 }
 
-void Server::on_shows_result(QNetworkReply *reply)
+void Server::on_initial_shows_result(QNetworkReply *reply)
 {
     reply->deleteLater();
     if (reply->error() != QNetworkReply::NoError) {
-        emit req_shows_error(reply->errorString());
+        emit initial_req_shows_error(reply->errorString());
         return;
     }
 
@@ -101,9 +113,27 @@ void Server::on_shows_result(QNetworkReply *reply)
     if (doc.isArray()) {
         shows = doc.array().toVariantList();
         emit shows_changed();
-        emit req_shows_success();
+        emit initial_req_shows_success();
     } else {
-        emit req_shows_error("Invalid data recieved from server.");
+        emit initial_req_shows_error("Invalid data recieved from server.");
+    }
+}
+
+void Server::on_post_scan_shows_result(QNetworkReply *reply)
+{
+    reply->deleteLater();
+    if (reply->error() != QNetworkReply::NoError) {
+        emit post_scan_req_shows_error(reply->errorString());
+        return;
+    }
+
+    QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+    if (doc.isArray()) {
+        shows = doc.array().toVariantList();
+        emit shows_changed();
+        emit post_scan_req_shows_success();
+    } else {
+        emit post_scan_req_shows_error("Invalid data recieved from server.");
     }
 }
 
@@ -142,11 +172,11 @@ void Server::on_seasons_result(QNetworkReply *reply)
     }
 }
 
-void Server::on_movies_result(QNetworkReply *reply)
+void Server::on_initial_movies_result(QNetworkReply *reply)
 {
     reply->deleteLater();
     if (reply->error() != QNetworkReply::NoError) {
-        emit req_movies_error(reply->errorString());
+        emit initial_req_movies_error(reply->errorString());
         return;
     }
 
@@ -154,9 +184,27 @@ void Server::on_movies_result(QNetworkReply *reply)
     if (doc.isArray()) {
         media_dirs = doc.array().toVariantList();
         emit media_dirs_changed();
-        emit req_movies_success();
+        emit initial_req_movies_success();
     } else {
-        emit req_movies_error("Invalid data recieved from server.");
+        emit initial_req_movies_error("Invalid data recieved from server.");
+    }
+}
+
+void Server::on_post_scan_movies_result(QNetworkReply *reply)
+{
+    reply->deleteLater();
+    if (reply->error() != QNetworkReply::NoError) {
+        emit post_scan_req_movies_error(reply->errorString());
+        return;
+    }
+
+    QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+    if (doc.isArray()) {
+        media_dirs = doc.array().toVariantList();
+        emit media_dirs_changed();
+        emit post_scan_req_movies_success();
+    } else {
+        emit post_scan_req_movies_error("Invalid data recieved from server.");
     }
 }
 

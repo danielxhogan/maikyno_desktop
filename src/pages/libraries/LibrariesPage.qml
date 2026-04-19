@@ -9,7 +9,7 @@ Item {
     Connections {
         target: Server
 
-        function onReq_shows_success()
+        function onInitial_req_shows_success()
         {
             libraries_root.loading = false
             libraries_err_msg.text = ""
@@ -17,13 +17,13 @@ Item {
             pages_stack.push(shows_component)
         }
 
-        function onReq_shows_error(message)
+        function onInitial_req_shows_error(message)
         {
             libraries_root.loading = false;
             libraries_err_msg.text = message
         }
 
-        function onReq_movies_success()
+        function onInitial_req_movies_success()
         {
             libraries_root.loading = false
             libraries_err_msg.text = ""
@@ -31,7 +31,7 @@ Item {
             pages_stack.push(media_dirs_component)
         }
 
-        function onReq_movies_error(message)
+        function onInitial_req_movies_error(message)
         {
             libraries_root.loading = false;
             libraries_err_msg.text = message
@@ -98,7 +98,7 @@ Item {
                         app.library_id = modelData.id
                         app.library_name = modelData.name
                         Server.req_library_contents(modelData.id,
-                            modelData.media_type)
+                            modelData.media_type, "libraries")
                     }
                 }
 

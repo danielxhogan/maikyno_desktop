@@ -12,8 +12,8 @@ Item {
         function onScan_library_success()
         {
             shows_root.loading = false;
-            shows_err_msg.text = ""
-            Server.req_library_contents(app.library_id, "show")
+            shows_err_msg.text = "Library Successfully Scanned"
+            Server.req_library_contents(app.library_id, "show", "shows")
         }
 
         function onScan_library_error(message)

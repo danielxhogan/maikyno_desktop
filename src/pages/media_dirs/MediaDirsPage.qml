@@ -13,6 +13,7 @@ Item {
         {
             media_dirs_root.loading = false
             media_dir_err_msg.text = "Library successfully scanned"
+            Server.req_library_contents(app.library_id, "movie", "media_dirs")
         }
 
         function onScan_library_error(message)
