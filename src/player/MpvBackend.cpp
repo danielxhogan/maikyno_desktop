@@ -23,6 +23,7 @@ MpvBackend::MpvBackend()
     mpv_set_option_string(mpv, "terminal", "yes");
     mpv_set_option_string(mpv, "msg-level", "all=v");
     mpv_set_option_string(mpv, "vo", "libmpv");
+    mpv_set_property_string(mpv, "keep-open", "yes");
 
     if (mpv_initialize(mpv) < 0)
         throw std::runtime_error("Failed to initialize mpv handle.");
@@ -231,20 +232,35 @@ int MpvBackend::render_context_initialized()
 
 void MpvBackend::save_state()
 {
-    QVariant current_ts = mpv_utils::get_property(mpv, QString("time-pos"));
+    int current_ts = mpv_utils::get_property(mpv, QString("time-pos")).toInt();
+    int duration = mpv_utils::get_property(mpv, QString("duration")).toInt();
+    int pct_watched;
+    if (duration > 0)
+        pct_watched = (current_ts * 100) / duration;
+    else
+        pct_watched = 0;
+    int finished = mpv_utils::get_property(mpv, QString("eof-reached")).toInt();
+    int ts;
+    if (finished)
+        ts = 0;
+    else
+        ts = current_ts;
+
     QVariant vid = mpv_utils::get_property(mpv, QString("vid"));
     QVariant aid = mpv_utils::get_property(mpv, QString("aid"));
     QVariant sid = mpv_utils::get_property(mpv, QString("sid"));
     QVariant sub_pos = mpv_utils::get_property(mpv, "sub-pos");
 
-    UpdateVideoPlaybackStateParams update_params = {
+    SaveStateParams save_state_params = {
         .video_id = video_id,
-        .ts = current_ts.toInt(),
+        .ts = ts,
+        .pct_watched = pct_watched,
+        .finished = finished,
         .v_stream = vid.toInt(),
         .a_stream = aid.toInt(),
         .s_stream = sid.toInt(),
         .s_pos = sub_pos.toInt()
     };
 
-    server->update_video_playback_state(&update_params);
+    server->save_state(&save_state_params);
 }

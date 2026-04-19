@@ -288,21 +288,25 @@ void Server::on_player_videos_result(QNetworkReply *reply)
     }
 }
 
-void Server::update_video_playback_state(UpdateVideoPlaybackStateParams *params)
+void Server::save_state(SaveStateParams *params)
 {
-    QUrl url(QString("http://%1:8080/update_video_playback_state").arg(ip));
+    QUrl url(QString("http://%1:8080/save_state").arg(ip));
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
     QString body = QString("{\
         \"video_id\": \"%1\",\
         \"ts\": %2,\
-        \"v_stream\": %3,\
-        \"a_stream\": %4,\
-        \"s_stream\": %5,\
-        \"s_pos\": %6}")
+        \"pct_watched\": %3,\
+        \"finished\": %4,\
+        \"v_stream\": %5,\
+        \"a_stream\": %6,\
+        \"s_stream\": %7,\
+        \"s_pos\": %8}")
         .arg(params->video_id.toUtf8().data())
         .arg(params->ts - 10)
+        .arg(params->pct_watched)
+        .arg(params->finished)
         .arg(params->v_stream)
         .arg(params->a_stream)
         .arg(params->s_stream)

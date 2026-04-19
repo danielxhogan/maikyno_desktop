@@ -4,14 +4,16 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 
-typedef struct UpdateVideoPlaybackStateParams {
+typedef struct SaveStateParams {
     QString video_id;
     int ts;
+    int pct_watched;
+    int finished;
     int v_stream;
     int a_stream;
     int s_stream;
     int s_pos;
-} UpdateVideoPlaybackStateParams;
+} SaveStateParams;
 
 class Server : public QObject {
     Q_OBJECT
@@ -40,7 +42,7 @@ public:
     QVariantList get_shows() const;
     QVariantList get_media_dirs() const;
     QVariantList get_videos() const;
-    void update_video_playback_state(UpdateVideoPlaybackStateParams *params);
+    void save_state(SaveStateParams *params);
     QVariantList get_video_streams() const;
 
 private:
