@@ -68,7 +68,7 @@ Item {
                         "id": stream.id,
                         "title": surround ? stream.title : "Stereo",
                         "passthrough": lossless ? true : false,
-                        "gain_boost": surround ? 0 : 8,
+                        "gain_boost": surround ? 0 : 6,
                         "create_renditions": second_rendition,
                         "title2": second_rendition ? "Stereo" : "",
                         "gain_boost2": second_rendition ? 6 : 0,
@@ -399,6 +399,9 @@ Item {
             enabled: !configurator_root.loading
                 && include_video.checked
                 && include_stream.checked
+                && (modelData.stream_type == 0
+                    || modelData.stream_type == 1
+                    || !burn_in_stream.checked)
 
             text: modelData.stream_type == 0
                 ? cfg_state
@@ -453,6 +456,7 @@ Item {
         }
 
         CheckBox {
+            id: passthrough_stream
             enabled: !configurator_root.loading
                 && include_video.checked
                 && include_stream.checked
@@ -512,6 +516,7 @@ Item {
             enabled: !configurator_root.loading
                 && include_video.checked
                 && include_stream.checked
+                && !passthrough_stream.checked
 
             visible: modelData.stream_type == 0
             height: modelData.stream_type == 0
@@ -568,6 +573,7 @@ Item {
             enabled: !configurator_root.loading
                 && include_video.checked
                 && include_stream.checked
+                && !passthrough_stream.checked
 
             scale: 1.5
             visible: modelData.stream_type == 0
@@ -607,6 +613,7 @@ Item {
             enabled: !configurator_root.loading
                 && include_video.checked
                 && include_stream.checked
+                && !passthrough_stream.checked
 
             scale: 1.5
             visible: modelData.stream_type == 0
@@ -648,6 +655,7 @@ Item {
             enabled: !configurator_root.loading
                 && include_video.checked
                 && include_stream.checked
+                && !passthrough_stream.checked
 
             visible: modelData.stream_type == 1
             height: modelData.stream_type == 1
@@ -695,6 +703,7 @@ Item {
         }
 
         CheckBox {
+            id: burn_in_stream
             enabled: !configurator_root.loading
                 && include_video.checked
                 && include_stream.checked
@@ -740,6 +749,7 @@ Item {
             enabled: !configurator_root.loading
                 && include_video.checked
                 && include_stream.checked
+                && !passthrough_stream.checked
 
             scale: 1.5
             visible: modelData.stream_type != 3
@@ -808,6 +818,7 @@ Item {
                 && include_video.checked
                 && include_stream.checked
                 && create_renditions.checked
+                && !passthrough_stream.checked
 
             visible: modelData.stream_type != 3
             height: modelData.stream_type == 3
@@ -864,6 +875,7 @@ Item {
                 && include_video.checked
                 && include_stream.checked
                 && create_renditions.checked
+                && !passthrough_stream.checked
 
             visible: modelData.stream_type == 0
             height: modelData.stream_type == 0
@@ -921,6 +933,7 @@ Item {
                 && include_video.checked
                 && include_stream.checked
                 && create_renditions.checked
+                && !passthrough_stream.checked
 
             scale: 1.5
             visible: modelData.stream_type == 0
@@ -963,6 +976,7 @@ Item {
                 && include_video.checked
                 && include_stream.checked
                 && create_renditions.checked
+                && !passthrough_stream.checked
 
             visible: modelData.stream_type == 1
             height: modelData.stream_type == 1
