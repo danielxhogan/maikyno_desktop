@@ -64,7 +64,7 @@ Item {
                 onClicked: {
                     media_dirs_root.loading = true
                     media_dir_err_msg.text = "Scanning library"
-                    Server.scan_library(app.library_id)
+                    Server.scan_library(app.library_id, Server.CALLEE_MEDIA_DIRS)
                 }
             }
         }

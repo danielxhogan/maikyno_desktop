@@ -63,7 +63,7 @@ Item {
 
                 onClicked: {
                     shows_root.loading = true
-                    Server.scan_library(app.library_id)
+                    Server.scan_library(app.library_id, Server.CALLEE_SHOWS)
                 }
             }
         }

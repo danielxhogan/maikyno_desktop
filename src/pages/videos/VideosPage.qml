@@ -11,6 +11,40 @@ Item {
     Connections {
         target: Server
 
+        function onRename_extras_success()
+        {
+            vidoes_err_msg.text = "Extras Successfully Renamed"
+            Server.scan_library(app.library_id, Server.CALLEE_VIDEOS)
+        }
+
+        function onRename_extras_error(message)
+        {
+            videos_root.loading = false
+            vidoes_err_msg.text = message
+        }
+
+        function onVideos_scan_library_success()
+        {
+            Server.req_videos(app.media_dir_id, Server.CALLEE_VIDEOS);
+        }
+
+        function onVideos_scan_library_error(message)
+        {
+            videos_root.loading = false
+            vidoes_err_msg.text = message
+        }
+
+        function onVideos_req_videos_success()
+        {
+            videos_root.loading = false
+        }
+
+        function onVideos_req_videos_error(message)
+        {
+            videos_root.loading = false
+            vidoes_err_msg.text = message
+        }
+
         function onReq_video_streams_success()
         {
             videos_root.loading = false
@@ -58,7 +92,7 @@ Item {
 
                         onClicked: {
                             videos_root.loading = true;
-                            // Server.rename_extras(app.media_dir_id)
+                            Server.rename_extras(app.media_dir_id)
                         }
                     }
                 }
@@ -192,7 +226,6 @@ Item {
                             width: modelData.extra ? 250 : 0
                             height: modelData.extra ? 35 : 0
                             anchors.horizontalCenter: parent.horizontalCenter
-                            // anchors.left: parent.left
 
                             onClicked: {
                                 app.src = "http://" + Server.ip + ":8080/media/"

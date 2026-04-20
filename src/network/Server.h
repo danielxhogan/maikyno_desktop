@@ -96,12 +96,19 @@ signals:
 
     void scan_library_success();
     void scan_library_error(QString message);
+    void videos_scan_library_success();
+    void videos_scan_library_error(QString message);
 
     void media_dirs_req_videos_success();
     void media_dirs_req_videos_error(QString message);
+    void videos_req_videos_success();
+    void videos_req_videos_error(QString message);
     void player_req_videos_success();
     void player_req_videos_error(QString message);
     void videos_changed();
+
+    void rename_extras_success();
+    void rename_extras_error(QString message);
 
     void save_state_success();
     void save_state_error(QString message);
@@ -118,9 +125,10 @@ public slots:
     void req_libraries(const QString &ip);
     void req_library_contents(const QString &library_id,
         LibraryType lib_type, Callee callee);
-    void scan_library(const QString &library_id);
+    void scan_library(const QString &library_id, Callee callee);
     void req_seasons(const QString &show_id);
     void req_videos(const QString &media_dir_id, Callee callee);
+    void rename_extras(const QString &media_dir_id);
     void req_video_streams(const QString &media_dir_id);
     void process_media(const QJsonObject &process_media_info);
 
@@ -131,9 +139,11 @@ private slots:
     void on_seasons_result(QNetworkReply *reply);
     void on_initial_movies_result(QNetworkReply *reply);
     void on_post_scan_movies_result(QNetworkReply *reply);
-    void on_scan_library_result(QNetworkReply *reply);
+    void on_scan_library_result(QNetworkReply *reply, Callee callee);
     void on_media_dirs_videos_result(QNetworkReply *reply);
+    void on_videos_videos_result(QNetworkReply *reply);
     void on_player_videos_result(QNetworkReply *reply);
+    void on_rename_extras_result(QNetworkReply *reply);
     void on_save_state_result(QNetworkReply *reply);
     void on_video_streams_result(QNetworkReply *reply);
     void on_process_media_result(QNetworkReply *reply);

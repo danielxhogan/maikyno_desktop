@@ -220,7 +220,7 @@ void Server::on_post_scan_movies_result(QNetworkReply *reply)
     }
 }
 
-void Server::scan_library(const QString &library_id)
+void Server::scan_library(const QString &library_id, Callee callee)
 {
     QUrl url(QString("http://%1:8080/scan_library").arg(ip));
     QNetworkRequest request(url);
@@ -229,17 +229,36 @@ void Server::scan_library(const QString &library_id)
     QString body = QString("{\"library_id\": \"%1\"}").arg(library_id);
     QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
     connect(reply, &QNetworkReply::finished,
-        this, [this, reply]() { on_scan_library_result(reply);});
+        this, [this, reply, callee]() { on_scan_library_result(reply, callee);});
 }
 
-void Server::on_scan_library_result(QNetworkReply *reply)
+void Server::on_scan_library_result(QNetworkReply *reply, Callee callee)
 {
     reply->deleteLater();
     if (reply->error() != QNetworkReply::NoError) {
-        emit scan_library_error(reply->errorString());
+        switch (callee) {
+        case CALLEE_MEDIA_DIRS:
+        case CALLEE_SHOWS:
+            emit scan_library_error(reply->errorString());
+            break;
+        case CALLEE_VIDEOS:
+            emit videos_scan_library_error(reply->errorString());
+            break;
+        default: break;
+        }
         return;
     }
-    emit scan_library_success();
+
+    switch (callee) {
+    case CALLEE_MEDIA_DIRS:
+    case CALLEE_SHOWS:
+        emit scan_library_success();
+        break;
+    case CALLEE_VIDEOS:
+        emit videos_scan_library_success();
+        break;
+    default: break;
+    }
 }
 
 QVariantList Server::get_videos() const
@@ -258,6 +277,9 @@ void Server::req_videos(const QString &media_dir_id, Callee callee)
     if (callee == CALLEE_MEDIA_DIRS) {
         connect(reply, &QNetworkReply::finished,
             this, [this, reply]() { on_media_dirs_videos_result(reply); });
+    } else if (callee == CALLEE_VIDEOS) {
+        connect(reply, &QNetworkReply::finished,
+            this, [this, reply]() { on_videos_videos_result(reply); });
     } else if (callee == CALLEE_PLAYER) {
         connect(reply, &QNetworkReply::finished,
             this, [this, reply]() { on_player_videos_result(reply); });
@@ -282,6 +304,24 @@ void Server::on_media_dirs_videos_result(QNetworkReply *reply)
     }
 }
 
+void Server::on_videos_videos_result(QNetworkReply *reply)
+{
+    reply->deleteLater();
+    if (reply->error() != QNetworkReply::NoError) {
+        emit videos_req_videos_error(reply->errorString());
+        return;
+    }
+
+    QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+    if (doc.isArray()) {
+        videos = doc.array().toVariantList();
+        emit videos_changed();
+        emit videos_req_videos_success();
+    } else {
+        emit videos_req_videos_error("Invalid data recieved from server.");
+    }
+}
+
 void Server::on_player_videos_result(QNetworkReply *reply)
 {
     reply->deleteLater();
@@ -298,6 +338,28 @@ void Server::on_player_videos_result(QNetworkReply *reply)
     } else {
         emit player_req_videos_error("Invalid data recieved from server.");
     }
+}
+
+void Server::rename_extras(const QString &media_dir_id)
+{
+    QUrl url(QString("http://%1:8080/rename_extras").arg(ip));
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader,
+        "application/json");
+    QString body = QString("{\"media_dir_id\": \"%1\"}").arg(media_dir_id);
+    QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
+    connect(reply, &QNetworkReply::finished,
+        this, [this, reply]() { on_rename_extras_result(reply);});
+}
+
+void Server::on_rename_extras_result(QNetworkReply *reply)
+{
+    reply->deleteLater();
+    if (reply->error() != QNetworkReply::NoError) {
+        emit rename_extras_error(reply->errorString());
+        return;
+    }
+    emit rename_extras_success();
 }
 
 void Server::save_state(SaveStateParams *params)
@@ -379,7 +441,8 @@ void Server::process_media(const QJsonObject &process_media_info)
     QUrl url(QString("http://%1:8080/process_media").arg(ip));
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    QString body = QJsonDocument(process_media_info).toJson(QJsonDocument::Compact);
+    QString body = QJsonDocument(process_media_info)
+        .toJson(QJsonDocument::Compact);
     QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
 
     connect(reply, &QNetworkReply::finished,
