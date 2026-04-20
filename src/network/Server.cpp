@@ -73,7 +73,7 @@ void Server::req_library_contents(const QString &libary_id,
         if (callee == "libraries") {
             connect(reply, &QNetworkReply::finished,
                 this, [this, reply]() { on_initial_movies_result(reply); });
-        } else if (callee == "movies") {
+        } else if (callee == "media_dirs") {
             connect(reply, &QNetworkReply::finished,
                 this, [this, reply]() { on_post_scan_movies_result(reply); });
         }
