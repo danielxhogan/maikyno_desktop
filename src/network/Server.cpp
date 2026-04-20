@@ -26,6 +26,18 @@ void Server::set_ip(const QString &ip_prop)
     emit ip_changed();
 }
 
+enum Server::LibraryType
+Server::library_type_qstring_to_enum(QString lib_type_qstring)
+{
+    if (strcmp(lib_type_qstring.toUtf8().data(), "movie") == 0) {
+        return LIBRARY_TYPE_MOVIE;
+    } else if (strcmp(lib_type_qstring.toUtf8().data(), "show") == 0) {
+        return LIBRARY_TYPE_SHOW;
+    } else {
+        return LIBRARY_TYPE_NONE;
+    }
+}
+
 QVariantList Server::get_libraries() const
 {
     return libraries;
@@ -60,9 +72,9 @@ void Server::on_libraries_result(QNetworkReply *reply)
 }
 
 void Server::req_library_contents(const QString &libary_id,
-    const QString &media_type, const QString &callee)
+    LibraryType lib_type, Callee callee)
 {
-    if (media_type == "movie") {
+    if (lib_type == LIBRARY_TYPE_MOVIE) {
         QUrl url(QString("http://%1:8080/get_movies").arg(ip));
         QNetworkRequest request(url);
         request.setHeader(QNetworkRequest::ContentTypeHeader,
@@ -70,15 +82,15 @@ void Server::req_library_contents(const QString &libary_id,
         QString body = QString("{\"library_id\": \"%1\"}").arg(libary_id);
         QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
 
-        if (callee == "libraries") {
+        if (callee == CALLEE_LIBRARIES) {
             connect(reply, &QNetworkReply::finished,
                 this, [this, reply]() { on_initial_movies_result(reply); });
-        } else if (callee == "media_dirs") {
+        } else if (callee == CALLEE_MEDIA_DIRS) {
             connect(reply, &QNetworkReply::finished,
                 this, [this, reply]() { on_post_scan_movies_result(reply); });
         }
     }
-    else if (media_type == "show") {
+    else if (lib_type == LIBRARY_TYPE_SHOW) {
         QUrl url(QString("http://%1:8080/get_shows").arg(ip));
         QNetworkRequest request(url);
         request.setHeader(QNetworkRequest::ContentTypeHeader,
@@ -86,10 +98,10 @@ void Server::req_library_contents(const QString &libary_id,
         QString body = QString("{\"library_id\": \"%1\"}").arg(libary_id);
         QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
 
-        if (callee == "libraries") {
+        if (callee == CALLEE_LIBRARIES) {
             connect(reply, &QNetworkReply::finished,
                 this, [this, reply]() { on_initial_shows_result(reply); });
-        } else if (callee == "shows") {
+        } else if (callee == CALLEE_SHOWS) {
             connect(reply, &QNetworkReply::finished,
                 this, [this, reply]() { on_post_scan_shows_result(reply); });
         }
@@ -235,7 +247,7 @@ QVariantList Server::get_videos() const
     return videos;
 }
 
-void Server::req_videos(const QString &media_dir_id, const QString &callee)
+void Server::req_videos(const QString &media_dir_id, Callee callee)
 {
     QUrl url(QString("http://%1:8080/get_videos").arg(ip));
     QNetworkRequest request(url);
@@ -243,10 +255,10 @@ void Server::req_videos(const QString &media_dir_id, const QString &callee)
     QString body = QString("{\"media_dir_id\": \"%1\"}").arg(media_dir_id);
     QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
 
-    if (callee == "media_dirs") {
+    if (callee == CALLEE_MEDIA_DIRS) {
         connect(reply, &QNetworkReply::finished,
             this, [this, reply]() { on_media_dirs_videos_result(reply); });
-    } else if (callee == "player") {
+    } else if (callee == CALLEE_PLAYER) {
         connect(reply, &QNetworkReply::finished,
             this, [this, reply]() { on_player_videos_result(reply); });
     }

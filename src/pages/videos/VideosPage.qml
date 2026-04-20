@@ -58,6 +58,7 @@ Item {
 
                         onClicked: {
                             videos_root.loading = true;
+                            // Server.rename_extras(app.media_dir_id)
                         }
                     }
                 }
@@ -131,7 +132,6 @@ Item {
                             width: modelData.extra ? 0 : 250
                             height: modelData.extra ? 0 : 35
                             anchors.horizontalCenter: parent.horizontalCenter
-                            // anchors.left: parent.left
 
                             onClicked: {
                                 app.src = "http://" + Server.ip + ":8080/media/"

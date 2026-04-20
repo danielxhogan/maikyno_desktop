@@ -45,6 +45,23 @@ public:
     void save_state(SaveStateParams *params);
     QVariantList get_video_streams() const;
 
+    enum LibraryType {
+        LIBRARY_TYPE_MOVIE,
+        LIBRARY_TYPE_SHOW,
+        LIBRARY_TYPE_NONE,
+    };
+    Q_ENUM(LibraryType);
+
+
+    enum Callee {
+        CALLEE_LIBRARIES,
+        CALLEE_SHOWS,
+        CALLEE_MEDIA_DIRS,
+        CALLEE_VIDEOS,
+        CALLEE_PLAYER,
+    };
+    Q_ENUM(Callee);
+
 private:
     QString ip;
     QNetworkAccessManager *net_mgr;
@@ -97,12 +114,13 @@ signals:
     void process_media_error(QString message);
 
 public slots:
+    enum LibraryType library_type_qstring_to_enum(QString lib_type_qstring);
     void req_libraries(const QString &ip);
     void req_library_contents(const QString &library_id,
-        const QString &media_type, const QString &callee);
+        LibraryType lib_type, Callee callee);
     void scan_library(const QString &library_id);
     void req_seasons(const QString &show_id);
-    void req_videos(const QString &media_dir_id, const QString &callee);
+    void req_videos(const QString &media_dir_id, Callee callee);
     void req_video_streams(const QString &media_dir_id);
     void process_media(const QJsonObject &process_media_info);
 

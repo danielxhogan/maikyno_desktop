@@ -30,7 +30,7 @@ Item {
 
             function onSave_state_success()
             {
-                Server.req_videos(app.media_dir_id, "player");
+                Server.req_videos(app.media_dir_id, Server.CALLEE_PLAYER);
             }
 
             function onSave_state_error(message)

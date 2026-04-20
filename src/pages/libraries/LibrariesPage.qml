@@ -98,7 +98,8 @@ Item {
                         app.library_id = modelData.id
                         app.library_name = modelData.name
                         Server.req_library_contents(modelData.id,
-                            modelData.media_type, "libraries")
+                            Server.library_type_qstring_to_enum(modelData.media_type),
+                            Server.CALLEE_LIBRARIES)
                     }
                 }
 

@@ -13,7 +13,8 @@ Item {
         {
             media_dirs_root.loading = false
             media_dir_err_msg.text = "Library successfully scanned"
-            Server.req_library_contents(app.library_id, "movie", "media_dirs")
+            Server.req_library_contents(app.library_id,
+                Server.LIBRARY_TYPE_MOVIE, Server.CALLEE_MEDIA_DIRS)
         }
 
         function onScan_library_error(message)
@@ -110,7 +111,7 @@ Item {
                         media_dirs_root.loading = true
                         app.media_dir_id = modelData.id
                         app.media_dir_name = modelData.name
-                        Server.req_videos(modelData.id, "media_dirs")
+                        Server.req_videos(modelData.id, Server.CALLEE_MEDIA_DIRS)
                     }
                 }
             }

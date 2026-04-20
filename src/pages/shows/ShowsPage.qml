@@ -13,7 +13,8 @@ Item {
         {
             shows_root.loading = false;
             shows_err_msg.text = "Library Successfully Scanned"
-            Server.req_library_contents(app.library_id, "show", "shows")
+            Server.req_library_contents(app.library_id,
+                Server.LIBRARY_TYPE_SHOW, Server.CALLEE_SHOWS)
         }
 
         function onScan_library_error(message)
