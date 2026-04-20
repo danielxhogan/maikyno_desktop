@@ -42,18 +42,41 @@ Item {
                 onClicked: pages_stack.pop();
             }
 
-            Button {
-                text: "Process Videos"
-                enabled: !videos_root.loading
+            Item {
                 anchors.right: parent.right
-                leftPadding: 10
-                rightPadding: 10
+                width: 250
 
-                onClicked: {
-                    videos_root.loading = true
-                    Server.req_video_streams(app.media_dir_id);
+                Item {
+                    width: rename_extras_btn.width + 20
+                    anchors.right: process_videos_btn.left
+
+                    Button {
+                        id: rename_extras_btn
+                        text: "Rename Extras"
+                        leftPadding: 10
+                        rightPadding: 10
+
+                        onClicked: {
+                            videos_root.loading = true;
+                        }
+                    }
+                }
+
+                Button {
+                    id: process_videos_btn
+                    text: "Process Videos"
+                    enabled: !videos_root.loading
+                    anchors.right: parent.right
+                    leftPadding: 10
+                    rightPadding: 10
+
+                    onClicked: {
+                        videos_root.loading = true
+                        Server.req_video_streams(app.media_dir_id);
+                    }
                 }
             }
+
         }
 
         Column {
