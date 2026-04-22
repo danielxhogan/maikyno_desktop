@@ -22,6 +22,9 @@ class Server : public QObject {
     Q_PROPERTY(QVariantList libraries
         READ get_libraries NOTIFY libraries_changed);
 
+    Q_PROPERTY(QVariantList collections
+        READ get_collections NOTIFY collections_changed);
+
     Q_PROPERTY(QVariantList shows
         READ get_shows NOTIFY shows_changed);
 
@@ -39,6 +42,7 @@ public:
     QString get_ip() const;
     void set_ip(const QString &ip_prop);
     QVariantList get_libraries() const;
+    QVariantList get_collections() const;
     QVariantList get_shows() const;
     QVariantList get_media_dirs() const;
     QVariantList get_videos() const;
@@ -66,6 +70,7 @@ private:
     QString ip;
     QNetworkAccessManager *net_mgr;
     QVariantList libraries;
+    QVariantList collections;
     QVariantList shows;
     QVariantList media_dirs;
     QVariantList videos;
@@ -77,6 +82,10 @@ signals:
     void req_libraries_success();
     void req_libraries_error(QString message);
     void libraries_changed();
+
+    void req_collections_success();
+    void req_collections_error(QString message);
+    void collections_changed();
 
     void initial_req_shows_success();
     void initial_req_shows_error(QString message);
@@ -123,6 +132,7 @@ signals:
 public slots:
     enum LibraryType library_type_qstring_to_enum(QString lib_type_qstring);
     void req_libraries(const QString &ip);
+    void req_collections(const QString &library_id);
     void req_library_contents(const QString &library_id,
         LibraryType lib_type, Callee callee);
     void scan_library(const QString &library_id, Callee callee);
@@ -134,6 +144,7 @@ public slots:
 
 private slots:
     void on_libraries_result(QNetworkReply *reply);
+    void on_collections_result(QNetworkReply *reply);
     void on_initial_shows_result(QNetworkReply *reply);
     void on_post_scan_shows_result(QNetworkReply *reply);
     void on_seasons_result(QNetworkReply *reply);

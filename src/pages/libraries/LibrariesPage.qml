@@ -5,15 +5,30 @@ import Server
 Item {
     id: libraries_root
     property bool loading: false
+    property string media_type
 
     Connections {
         target: Server
+
+        function onReq_collections_success()
+        {
+            Server.req_library_contents(app.library_id,
+                Server.library_type_qstring_to_enum(media_type),
+                Server.CALLEE_LIBRARIES)
+        }
+
+        function onReq_collections_error(message)
+        {
+            libraries_root.loading = false;
+            libraries_err_msg.text = message
+        }
 
         function onInitial_req_shows_success()
         {
             libraries_root.loading = false
             libraries_err_msg.text = ""
             app.movie_library = false
+            app.viewing_collection = false
             pages_stack.push(shows_component)
         }
 
@@ -28,6 +43,7 @@ Item {
             libraries_root.loading = false
             libraries_err_msg.text = ""
             app.movie_library = true
+            app.viewing_collection = false
             pages_stack.push(media_dirs_component)
         }
 
@@ -97,9 +113,8 @@ Item {
                         libraries_root.loading = true
                         app.library_id = modelData.id
                         app.library_name = modelData.name
-                        Server.req_library_contents(modelData.id,
-                            Server.library_type_qstring_to_enum(modelData.media_type),
-                            Server.CALLEE_LIBRARIES)
+                        media_type = modelData.media_type
+                        Server.req_collections(modelData.id)
                     }
                 }
 

@@ -71,6 +71,40 @@ void Server::on_libraries_result(QNetworkReply *reply)
     }
 }
 
+QVariantList Server::get_collections() const
+{
+    return collections;
+}
+
+void Server::req_collections(const QString &library_id)
+{
+    QUrl url(QString("http://%1:8080/get_collections").arg(ip));
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QString body = QString("{\"library_id\": \"%1\"}").arg(library_id);
+    QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
+    connect(reply, &QNetworkReply::finished,
+        this, [this, reply]() { on_collections_result(reply); });
+}
+
+void Server::on_collections_result(QNetworkReply *reply)
+{
+    reply->deleteLater();
+    if (reply->error() != QNetworkReply::NoError) {
+        emit req_collections_error(reply->errorString());
+        return;
+    }
+
+    QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+    if (doc.isArray()) {
+        collections = doc.array().toVariantList();
+        emit collections_changed();
+        emit req_collections_success();
+    } else {
+        emit req_collections_error("Invalid data recieved from server.");
+    }
+}
+
 void Server::req_library_contents(const QString &libary_id,
     LibraryType lib_type, Callee callee)
 {

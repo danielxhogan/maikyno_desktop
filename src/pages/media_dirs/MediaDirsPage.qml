@@ -87,6 +87,19 @@ Item {
             }
 
             Text {
+                id: collections_title
+                visible: Server.collections.length > 0
+                height: Server.collections.length > 0 ? contentHeight : 0
+                text: app.movie_library && Server.collections.length > 0
+                    ? "Collections"
+                    : ""
+
+                anchors.horizontalCenter: parent.horizontalCenter
+                font.bold: true
+                font.pixelSize: 20
+            }
+
+            Text {
                 id: media_dir_err_msg
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: ""
