@@ -183,6 +183,40 @@ void Server::on_post_scan_shows_result(QNetworkReply *reply)
     }
 }
 
+QVariantList Server::get_collection_shows() const
+{
+    return collection_shows;
+}
+
+void Server::req_collection_shows(const QString &collection_id)
+{
+    QUrl url(QString("http://%1:8080/get_collection_shows").arg(ip));
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QString body = QString("{\"collection_id\": \"%1\"}").arg(collection_id);
+    QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
+    connect(reply, &QNetworkReply::finished,
+        this, [this, reply]() { on_collection_shows_result(reply); });
+}
+
+void Server::on_collection_shows_result(QNetworkReply *reply)
+{
+    reply->deleteLater();
+    if (reply->error() != QNetworkReply::NoError) {
+        emit req_collection_shows_error(reply->errorString());
+        return;
+    }
+
+    QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+    if (doc.isArray()) {
+        collection_shows = doc.array().toVariantList();
+        emit collection_shows_changed();
+        emit req_collection_shows_success();
+    } else {
+        emit req_collection_shows_error("Invalid data recieved from server.");
+    }
+}
+
 void Server::req_seasons(const QString &show_id)
 {
     QUrl url(QString("http://%1:8080/get_seasons").arg(ip));

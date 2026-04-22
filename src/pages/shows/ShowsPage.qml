@@ -24,6 +24,19 @@ Item {
             shows_err_msg.text = message
         }
 
+        function onReq_collection_shows_success()
+        {
+            shows_root.loading = false
+            shows_err_msg.text = ""
+            app.viewing_collection = true;
+        }
+
+        function onReq_collection_shows_error(message)
+        {
+            shows_root.loading = false
+            shows_err_msg.text = message
+        }
+
         function onReq_seasons_success()
         {
             shows_root.loading = false
@@ -94,6 +107,12 @@ Item {
             }
 
             Text {
+                id: shows_err_msg
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: ""
+            }
+
+            Text {
                 id: collections_title
                 visible: Server.collections.length > 0
                     && !app.viewing_collection
@@ -113,12 +132,6 @@ Item {
                 font.pixelSize: 20
             }
 
-            Text {
-                id: shows_err_msg
-                anchors.horizontalCenter: parent.horizontalCenter
-                text: ""
-            }
-
             ListView {
                 width: parent.width
                 height: contentHeight
@@ -135,9 +148,17 @@ Item {
                     enabled: !shows_root.loading
                     onClicked: {
                         collection_name = modelData.name
-                        app.viewing_collection = true;
+                        Server.req_collection_shows(modelData.id)
                     }
                 }
+            }
+
+            Text {
+                id: shows_title
+                text: "Shows"
+                anchors.horizontalCenter: parent.horizontalCenter
+                font.bold: true
+                font.pixelSize: 20
             }
 
             ListView {
@@ -168,7 +189,7 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: 10
                 clip: true
-                model: Server.shows
+                model: Server.collection_shows
 
                 delegate: Button {
                     width: 250
@@ -179,7 +200,7 @@ Item {
                     onClicked: {
                         shows_root.loading = true
                         app.show_name = modelData.name
-                        Server.req_seasons(modelData.id)
+                        Server.req_seasons(modelData.show_id)
                     }
                 }
 

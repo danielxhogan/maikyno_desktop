@@ -28,6 +28,9 @@ class Server : public QObject {
     Q_PROPERTY(QVariantList shows
         READ get_shows NOTIFY shows_changed);
 
+    Q_PROPERTY(QVariantList collection_shows
+        READ get_collection_shows NOTIFY collection_shows_changed);
+
     Q_PROPERTY(QVariantList media_dirs
         READ get_media_dirs NOTIFY media_dirs_changed);
 
@@ -44,6 +47,7 @@ public:
     QVariantList get_libraries() const;
     QVariantList get_collections() const;
     QVariantList get_shows() const;
+    QVariantList get_collection_shows() const;
     QVariantList get_media_dirs() const;
     QVariantList get_videos() const;
     void save_state(SaveStateParams *params);
@@ -72,6 +76,7 @@ private:
     QVariantList libraries;
     QVariantList collections;
     QVariantList shows;
+    QVariantList collection_shows;
     QVariantList media_dirs;
     QVariantList videos;
     QVariantList video_streams;
@@ -92,6 +97,10 @@ signals:
     void post_scan_req_shows_success();
     void post_scan_req_shows_error(QString message);
     void shows_changed();
+
+    void req_collection_shows_success();
+    void req_collection_shows_error(QString message);
+    void collection_shows_changed();
 
     void req_seasons_success();
     void req_seasons_error(QString message);
@@ -135,6 +144,7 @@ public slots:
     void req_collections(const QString &library_id);
     void req_library_contents(const QString &library_id,
         LibraryType lib_type, Callee callee);
+    void req_collection_shows(const QString &collection_id);
     void scan_library(const QString &library_id, Callee callee);
     void req_seasons(const QString &show_id);
     void req_videos(const QString &media_dir_id, Callee callee);
@@ -147,6 +157,7 @@ private slots:
     void on_collections_result(QNetworkReply *reply);
     void on_initial_shows_result(QNetworkReply *reply);
     void on_post_scan_shows_result(QNetworkReply *reply);
+    void on_collection_shows_result(QNetworkReply *reply);
     void on_seasons_result(QNetworkReply *reply);
     void on_initial_movies_result(QNetworkReply *reply);
     void on_post_scan_movies_result(QNetworkReply *reply);
