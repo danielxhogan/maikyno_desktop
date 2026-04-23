@@ -5,6 +5,7 @@ import Server
 Item {
     id: media_dirs_root
     property bool loading: false
+    property string collection_name
 
     Connections {
         target: Server
@@ -12,28 +13,41 @@ Item {
         function onScan_library_success()
         {
             media_dirs_root.loading = false
-            media_dir_err_msg.text = "Library successfully scanned"
+            media_dirs_err_msg.text = "Library successfully scanned"
             Server.req_library_contents(app.library_id,
                 Server.LIBRARY_TYPE_MOVIE, Server.CALLEE_MEDIA_DIRS)
         }
 
         function onScan_library_error(message)
         {
-            media_dirs_root.loading = false;
-            media_dir_err_msg.text = message
+            media_dirs_root.loading = false
+            media_dirs_err_msg.text = message
+        }
+
+        function onReq_collection_movies_success()
+        {
+            media_dirs_root.loading = false
+            media_dirs_err_msg.text = ""
+            app.viewing_collection = true
+        }
+
+        function onReq_collection_movies_error(message)
+        {
+            media_dirs_root.loading = false
+            media_dirs_err_msg.text = message
         }
 
         function onMedia_dirs_req_videos_success()
         {
             media_dirs_root.loading = false
-            media_dir_err_msg.text = ""
+            media_dirs_err_msg.text = ""
             pages_stack.push(videos_component)
         }
 
         function onMedia_dirs_req_videos_error(message)
         {
-            media_dirs_root.loading = false;
-            media_dir_err_msg.text = message
+            media_dirs_root.loading = false
+            media_dirs_err_msg.text = message
         }
     }
 
@@ -48,14 +62,20 @@ Item {
             anchors.margins: 20
 
             Button {
-                text: "Back";
+                text: "Back"
                 anchors.left: parent.left
-                onClicked: pages_stack.pop();
+                onClicked: {
+                    if (app.movie_library && app.viewing_collection) {
+                        app.viewing_collection = false
+                    } else {
+                        pages_stack.pop()
+                    }
+                }
             }
 
             Button {
                 text: "Scan Library"
-                visible: app.movie_library
+                visible: app.movie_library && !app.viewing_collection
                 anchors.right: parent.right
                 leftPadding: 10
                 rightPadding: 10
@@ -63,7 +83,7 @@ Item {
 
                 onClicked: {
                     media_dirs_root.loading = true
-                    media_dir_err_msg.text = "Scanning library"
+                    media_dirs_err_msg.text = "Scanning library"
                     Server.scan_library(app.library_id, Server.CALLEE_MEDIA_DIRS)
                 }
             }
@@ -87,10 +107,26 @@ Item {
             }
 
             Text {
+                id: media_dirs_err_msg
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: ""
+            }
+
+            Text {
                 id: collections_title
-                visible: Server.collections.length > 0
-                height: Server.collections.length > 0 ? contentHeight : 0
-                text: app.movie_library && Server.collections.length > 0
+                visible: app.movie_library
+                    && !app.viewing_collection
+                    && Server.collections.length > 0
+
+                height: app.movie_library
+                    && !app.viewing_collection
+                    && Server.collections.length > 0
+                    ? contentHeight
+                    : 0
+
+                text: app.movie_library
+                    && !app.viewing_collection
+                    && Server.collections.length > 0
                     ? "Collections"
                     : ""
 
@@ -99,32 +135,90 @@ Item {
                 font.pixelSize: 20
             }
 
-            Text {
-                id: media_dir_err_msg
-                anchors.horizontalCenter: parent.horizontalCenter
-                text: ""
-            }
-
             ListView {
+                model: Server.collections
                 width: parent.width
-                height: contentHeight
+                height: app.movie_library && !app.viewing_collection
+                    ? contentHeight
+                    : 0
+
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: 10
                 clip: true
-                model: Server.media_dirs
 
                 delegate: Button {
-                    width: 250
-                    height: 35
-                    anchors.horizontalCenter: parent.horizontalCenter
                     text: modelData.name
                     enabled: !media_dirs_root.loading
+                    width: 250
+                    height: 35
+                    anchors.horizontalCenter: parent?.horizontalCenter
+
+                    onClicked: {
+                        collection_name = modelData.name
+                        Server.req_collection_movies(modelData.id)
+                    }
+                }
+            }
+
+            Text {
+                id: media_dirs_title
+                text: app.movie_library ? "Movies" : "Seasons"
+                anchors.horizontalCenter: parent.horizontalCenter
+                font.bold: true
+                font.pixelSize: 20
+            }
+
+            ListView {
+                id: media_dirs_list_view
+                model: Server.media_dirs
+                width: parent.width
+                height: app.movie_library && app.viewing_collection
+                    ? 0
+                    : contentHeight
+
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: 10
+                clip: true
+
+                delegate: Button {
+                    text: modelData.name
+                    enabled: !media_dirs_root.loading
+                    width: 250
+                    height: 35
+                    anchors.horizontalCenter: parent?.horizontalCenter
 
                     onClicked: {
                         media_dirs_root.loading = true
                         app.media_dir_id = modelData.id
                         app.media_dir_name = modelData.name
                         Server.req_videos(modelData.id, Server.CALLEE_MEDIA_DIRS)
+                    }
+                }
+            }
+
+            ListView {
+                model: Server.collection_movies
+                width: parent.width
+                height: app.movie_library && app.viewing_collection
+                    ? contentHeight
+                    : 0
+
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: 10
+                clip: true
+
+                delegate: Button {
+                    text: modelData.name
+                    enabled: !media_dirs_root.loading
+                    width: 250
+                    height:35
+                    anchors.horizontalCenter: parent?.horizontalCenter
+
+                    onClicked: {
+                        media_dirs_root.loading = true
+                        app.media_dir_id = modelData.movie_id
+                        app.media_dir_name = modelData.name
+                        Server.req_videos(modelData.movie_id, Server.CALLEE_MEDIA_DIRS)
                     }
                 }
             }

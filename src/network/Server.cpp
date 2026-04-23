@@ -288,6 +288,40 @@ void Server::on_post_scan_movies_result(QNetworkReply *reply)
     }
 }
 
+QVariantList Server::get_collection_movies() const
+{
+    return collection_movies;
+}
+
+void Server::req_collection_movies(const QString &collection_id)
+{
+    QUrl url(QString("http://%1:8080/get_collection_movies").arg(ip));
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QString body = QString("{\"collection_id\": \"%1\"}").arg(collection_id);
+    QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
+    connect(reply, &QNetworkReply::finished,
+        this, [this, reply]() { on_collection_movies_result(reply); });
+}
+
+void Server::on_collection_movies_result(QNetworkReply *reply)
+{
+    reply->deleteLater();
+    if (reply->error() != QNetworkReply::NoError) {
+        emit req_collection_movies_error(reply->errorString());
+        return;
+    }
+
+    QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+    if (doc.isArray()) {
+        collection_movies = doc.array().toVariantList();
+        emit collection_movies_changed();
+        emit req_collection_movies_success();
+    } else {
+        emit req_collection_movies_error("Invalid data recieved from server.");
+    }
+}
+
 void Server::scan_library(const QString &library_id, Callee callee)
 {
     QUrl url(QString("http://%1:8080/scan_library").arg(ip));

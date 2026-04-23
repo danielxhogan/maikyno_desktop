@@ -84,6 +84,7 @@ Item {
 
                 onClicked: {
                     shows_root.loading = true
+                    shows_root_err_msg.text = "Scanning library"
                     Server.scan_library(app.library_id, Server.CALLEE_SHOWS)
                 }
             }
@@ -133,19 +134,21 @@ Item {
             }
 
             ListView {
+                model: Server.collections
                 width: parent.width
-                height: contentHeight
+                height: app.viewing_collection ? 0 : contentHeight
+
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: 10
                 clip: true
-                model: Server.collections
 
                 delegate: Button {
-                    width: 250
-                    height: app.viewing_collection ? 0 : 35
-                    anchors.horizontalCenter: parent.horizontalCenter
                     text: modelData.name
                     enabled: !shows_root.loading
+                    width: 250
+                    height: 35
+                    anchors.horizontalCenter: parent.horizontalCenter
+
                     onClicked: {
                         collection_name = modelData.name
                         Server.req_collection_shows(modelData.id)
@@ -162,19 +165,21 @@ Item {
             }
 
             ListView {
+                model: Server.shows
                 width: parent.width
                 height: app.viewing_collection ? 0 : contentHeight
+
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: 10
                 clip: true
-                model: Server.shows
 
                 delegate: Button {
+                    enabled: !shows_root.loading
+                    text: modelData.name
                     width: 250
                     height: 35
                     anchors.horizontalCenter: parent.horizontalCenter
-                    text: modelData.name
-                    enabled: !shows_root.loading
+
                     onClicked: {
                         shows_root.loading = true
                         app.show_name = modelData.name
@@ -184,26 +189,27 @@ Item {
             }
 
             ListView {
+                model: Server.collection_shows
                 width: parent.width
                 height: app.viewing_collection ? contentHeight : 0
+
                 anchors.horizontalCenter: parent.horizontalCenter
                 spacing: 10
                 clip: true
-                model: Server.collection_shows
 
                 delegate: Button {
+                    text: modelData.name
+                    enabled: !shows_root.loading
                     width: 250
                     height: 35
                     anchors.horizontalCenter: parent.horizontalCenter
-                    text: modelData.name
-                    enabled: !shows_root.loading
+
                     onClicked: {
                         shows_root.loading = true
                         app.show_name = modelData.name
                         Server.req_seasons(modelData.show_id)
                     }
                 }
-
             }
         }
     }

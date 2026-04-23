@@ -19,7 +19,7 @@ Item {
 
         function onReq_collections_error(message)
         {
-            libraries_root.loading = false;
+            libraries_root.loading = false
             libraries_err_msg.text = message
         }
 
@@ -34,7 +34,7 @@ Item {
 
         function onInitial_req_shows_error(message)
         {
-            libraries_root.loading = false;
+            libraries_root.loading = false
             libraries_err_msg.text = message
         }
 
@@ -49,7 +49,7 @@ Item {
 
         function onInitial_req_movies_error(message)
         {
-            libraries_root.loading = false;
+            libraries_root.loading = false
             libraries_err_msg.text = message
         }
     }
@@ -65,9 +65,9 @@ Item {
             anchors.margins: 20
 
             Button {
-                text: "Back";
+                text: "Back"
                 anchors.left: parent.left
-                onClicked: pages_stack.pop();
+                onClicked: pages_stack.pop()
             }
         }
 

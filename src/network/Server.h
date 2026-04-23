@@ -34,6 +34,9 @@ class Server : public QObject {
     Q_PROPERTY(QVariantList media_dirs
         READ get_media_dirs NOTIFY media_dirs_changed);
 
+    Q_PROPERTY(QVariantList collection_movies
+        READ get_collection_movies NOTIFY collection_movies_changed);
+
     Q_PROPERTY(QVariantList videos
         READ get_videos NOTIFY videos_changed);
 
@@ -49,6 +52,7 @@ public:
     QVariantList get_shows() const;
     QVariantList get_collection_shows() const;
     QVariantList get_media_dirs() const;
+    QVariantList get_collection_movies() const;
     QVariantList get_videos() const;
     void save_state(SaveStateParams *params);
     QVariantList get_video_streams() const;
@@ -78,6 +82,7 @@ private:
     QVariantList shows;
     QVariantList collection_shows;
     QVariantList media_dirs;
+    QVariantList collection_movies;
     QVariantList videos;
     QVariantList video_streams;
 
@@ -104,13 +109,15 @@ signals:
 
     void req_seasons_success();
     void req_seasons_error(QString message);
-
     void initial_req_movies_success();
     void initial_req_movies_error(QString message);
     void post_scan_req_movies_success();
     void post_scan_req_movies_error(QString message);
-
     void media_dirs_changed();
+
+    void req_collection_movies_success();
+    void req_collection_movies_error(QString message);
+    void collection_movies_changed();
 
     void scan_library_success();
     void scan_library_error(QString message);
@@ -131,9 +138,9 @@ signals:
     void save_state_success();
     void save_state_error(QString message);
 
-    void video_streams_changed();
     void req_video_streams_success();
     void req_video_streams_error(QString message);
+    void video_streams_changed();
 
     void process_media_success();
     void process_media_error(QString message);
@@ -145,8 +152,9 @@ public slots:
     void req_library_contents(const QString &library_id,
         LibraryType lib_type, Callee callee);
     void req_collection_shows(const QString &collection_id);
-    void scan_library(const QString &library_id, Callee callee);
     void req_seasons(const QString &show_id);
+    void req_collection_movies(const QString &collection_id);
+    void scan_library(const QString &library_id, Callee callee);
     void req_videos(const QString &media_dir_id, Callee callee);
     void rename_extras(const QString &media_dir_id);
     void req_video_streams(const QString &media_dir_id);
@@ -161,6 +169,7 @@ private slots:
     void on_seasons_result(QNetworkReply *reply);
     void on_initial_movies_result(QNetworkReply *reply);
     void on_post_scan_movies_result(QNetworkReply *reply);
+    void on_collection_movies_result(QNetworkReply *reply);
     void on_scan_library_result(QNetworkReply *reply, Callee callee);
     void on_media_dirs_videos_result(QNetworkReply *reply);
     void on_videos_videos_result(QNetworkReply *reply);
