@@ -43,6 +43,9 @@ class Server : public QObject {
     Q_PROPERTY(QVariantList video_streams
         READ get_video_streams NOTIFY video_streams_changed);
 
+    Q_PROPERTY(QVariantList process_jobs
+        READ get_process_jobs NOTIFY process_jobs_changed);
+
 public:
     explicit Server(QObject *parent = nullptr);
     QString get_ip() const;
@@ -56,6 +59,7 @@ public:
     QVariantList get_videos() const;
     void save_state(SaveStateParams *params);
     QVariantList get_video_streams() const;
+    QVariantList get_process_jobs() const;
 
     enum LibraryType {
         LIBRARY_TYPE_MOVIE,
@@ -85,6 +89,7 @@ private:
     QVariantList collection_movies;
     QVariantList videos;
     QVariantList video_streams;
+    QVariantList process_jobs;
 
 signals:
     void ip_changed();
@@ -145,6 +150,10 @@ signals:
     void process_media_success();
     void process_media_error(QString message);
 
+    void req_process_jobs_success();
+    void req_process_jobs_error(QString message);
+    void process_jobs_changed();
+
 public slots:
     enum LibraryType library_type_qstring_to_enum(QString lib_type_qstring);
     void req_libraries(const QString &ip);
@@ -159,6 +168,7 @@ public slots:
     void rename_extras(const QString &media_dir_id);
     void req_video_streams(const QString &media_dir_id);
     void process_media(const QJsonObject &process_media_info);
+    void req_process_jobs(const QString &media_dir_id);
 
 private slots:
     void on_libraries_result(QNetworkReply *reply);
@@ -178,4 +188,5 @@ private slots:
     void on_save_state_result(QNetworkReply *reply);
     void on_video_streams_result(QNetworkReply *reply);
     void on_process_media_result(QNetworkReply *reply);
+    void on_process_jobs_result(QNetworkReply *reply);
 };

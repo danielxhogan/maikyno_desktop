@@ -57,6 +57,19 @@ Item {
             videos_root.loading = false
             vidoes_err_msg.text = message
         }
+
+        function onReq_process_jobs_success()
+        {
+            videos_root.loading = false
+            vidoes_err_msg.text = ""
+            pages_stack.push(process_jobs_component)
+        }
+
+        function onReq_process_jobs_error(message)
+        {
+            videos_root.loading = false
+            vidoes_err_msg.text = message
+        }
     }
 
     ScrollView {
@@ -82,7 +95,7 @@ Item {
 
                 Item {
                     width: rename_extras_btn.width + 20
-                    anchors.right: process_videos_btn.left
+                    anchors.right: process_videos_item.left
 
                     Button {
                         id: rename_extras_btn
@@ -97,9 +110,28 @@ Item {
                     }
                 }
 
+                Item {
+                    id: process_videos_item
+                    width: process_videos_btn.width + 20
+                    anchors.right: view_jobs_btn.left
+
+                    Button {
+                        id: process_videos_btn
+                        text: "Process Videos"
+                        enabled: !videos_root.loading
+                        leftPadding: 10
+                        rightPadding: 10
+
+                        onClicked: {
+                            videos_root.loading = true
+                            Server.req_video_streams(app.media_dir_id);
+                        }
+                    }
+                }
+
                 Button {
-                    id: process_videos_btn
-                    text: "Process Videos"
+                    id: view_jobs_btn
+                    text: "View Jobs"
                     enabled: !videos_root.loading
                     anchors.right: parent.right
                     leftPadding: 10
@@ -107,7 +139,7 @@ Item {
 
                     onClicked: {
                         videos_root.loading = true
-                        Server.req_video_streams(app.media_dir_id);
+                        Server.req_process_jobs(app.media_dir_id);
                     }
                 }
             }
@@ -141,13 +173,12 @@ Item {
                 text: ""
             }
 
-
             ListView {
+                model: Server.videos
                 width: parent.width
                 height: contentHeight
                 anchors.horizontalCenter: parent.horizontalCenter
                 clip: true
-                model: Server.videos
 
                 delegate: Item {
                     visible: !modelData.extra

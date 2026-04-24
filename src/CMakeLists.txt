@@ -14,6 +14,7 @@ qt_add_qml_module(mkd
         "pages/media_dirs/MediaDirsPage.qml"
         "pages/videos/VideosPage.qml"
         "pages/videos/ConfiguratorPage.qml"
+        "pages/videos/ProcessJobsPage.qml"
         "pages/player/PlayerPage.qml"
 )
 

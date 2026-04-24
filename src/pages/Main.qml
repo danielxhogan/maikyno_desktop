@@ -60,6 +60,10 @@ ApplicationWindow {
         ConfiguratorPage { id: configurator_page }
     }
     Component {
+        id: process_jobs_component
+        ProcessJobsPage { id: process_jobs_page }
+    }
+    Component {
         id: player_component
         PlayerPage { id: player_page }
     }

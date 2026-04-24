@@ -560,3 +560,38 @@ void Server::on_process_media_result(QNetworkReply *reply)
     }
     emit process_media_success();
 }
+
+QVariantList Server::get_process_jobs() const
+{
+    return process_jobs;
+}
+
+void Server::req_process_jobs(const QString &media_dir_id)
+{
+    QUrl url(QString("http://%1:8080/get_process_jobs").arg(ip));
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QString body = QString("{\"media_dir_id\": \"%1\"}").arg(media_dir_id);
+    QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
+
+    connect(reply, &QNetworkReply::finished,
+        this, [this, reply]() { on_process_jobs_result(reply); });
+}
+
+void Server::on_process_jobs_result(QNetworkReply *reply)
+{
+    reply->deleteLater();
+    if (reply->error() != QNetworkReply::NoError) {
+        emit req_process_jobs_error(reply->errorString());
+        return;
+    }
+
+    QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+    if (doc.isArray()) {
+        process_jobs = doc.array().toVariantList();
+        emit process_jobs_changed();
+        emit req_process_jobs_success();
+    } else {
+        emit req_process_jobs_error("Invalid data recieved from server.");
+    }
+}
