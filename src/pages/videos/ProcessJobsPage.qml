@@ -5,6 +5,22 @@ import Server
 
 Item {
     id: process_jobs_root
+    property bool loading: false
+
+    Connections {
+        target: Server
+
+        function onAbort_batch_success()
+        {
+            process_jobs_root.loading = false;
+        }
+
+        function onAbort_batch_error(message)
+        {
+            videos_root.loading = false
+            vidoes_err_msg.text = message
+        }
+    }
 
     ScrollView {
         width: parent.width
@@ -18,7 +34,6 @@ Item {
 
             Button {
                 text: "Back"
-                enabled: !process_jobs_root.loading
                 anchors.left: parent.left
                 onClicked: pages_stack.pop();
             }
@@ -73,6 +88,11 @@ Item {
                             text: "Abort"
                             visible: modelData.process_job.job_status == "pending"
                                 || modelData.process_job.job_status == "processing"
+
+                            onClicked: {
+                                process_jobs_root.loading = true
+                                Server.abort_batch(modelData.process_job.batch_id)
+                            }
                         }
                     }
 

@@ -74,6 +74,7 @@ public:
         CALLEE_SHOWS,
         CALLEE_MEDIA_DIRS,
         CALLEE_VIDEOS,
+        CALLEE_PROCESS_JOBS,
         CALLEE_PLAYER,
     };
     Q_ENUM(Callee);
@@ -150,9 +151,14 @@ signals:
     void process_media_success();
     void process_media_error(QString message);
 
-    void req_process_jobs_success();
-    void req_process_jobs_error(QString message);
+    void videos_req_process_jobs_success();
+    void videos_req_process_jobs_error(QString message);
+    void process_jobs_req_process_jobs_success();
+    void process_jobs_req_process_jobs_error(QString message);
     void process_jobs_changed();
+
+    void abort_batch_success();
+    void abort_batch_error(QString message);
 
 public slots:
     enum LibraryType library_type_qstring_to_enum(QString lib_type_qstring);
@@ -168,7 +174,8 @@ public slots:
     void rename_extras(const QString &media_dir_id);
     void req_video_streams(const QString &media_dir_id);
     void process_media(const QJsonObject &process_media_info);
-    void req_process_jobs(const QString &media_dir_id);
+    void req_process_jobs(const QString &media_dir_id, Callee callee);
+    void abort_batch(const QString &batch_id);
 
 private slots:
     void on_libraries_result(QNetworkReply *reply);
@@ -188,5 +195,6 @@ private slots:
     void on_save_state_result(QNetworkReply *reply);
     void on_video_streams_result(QNetworkReply *reply);
     void on_process_media_result(QNetworkReply *reply);
-    void on_process_jobs_result(QNetworkReply *reply);
+    void on_process_jobs_result(QNetworkReply *reply, Callee callee);
+    void on_abort_batch_result(QNetworkReply *reply);
 };

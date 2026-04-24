@@ -58,14 +58,14 @@ Item {
             vidoes_err_msg.text = message
         }
 
-        function onReq_process_jobs_success()
+        function onVideos_req_process_jobs_success()
         {
             videos_root.loading = false
             vidoes_err_msg.text = ""
             pages_stack.push(process_jobs_component)
         }
 
-        function onReq_process_jobs_error(message)
+        function onVideos_req_process_jobs_error(message)
         {
             videos_root.loading = false
             vidoes_err_msg.text = message
@@ -139,7 +139,8 @@ Item {
 
                     onClicked: {
                         videos_root.loading = true
-                        Server.req_process_jobs(app.media_dir_id);
+                        Server.req_process_jobs(app.media_dir_id,
+                            Server.CALLEE_VIDEOS);
                     }
                 }
             }

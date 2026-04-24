@@ -566,7 +566,7 @@ QVariantList Server::get_process_jobs() const
     return process_jobs;
 }
 
-void Server::req_process_jobs(const QString &media_dir_id)
+void Server::req_process_jobs(const QString &media_dir_id, Callee callee)
 {
     QUrl url(QString("http://%1:8080/get_process_jobs").arg(ip));
     QNetworkRequest request(url);
@@ -575,14 +575,37 @@ void Server::req_process_jobs(const QString &media_dir_id)
     QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
 
     connect(reply, &QNetworkReply::finished,
-        this, [this, reply]() { on_process_jobs_result(reply); });
+        this, [this, reply, callee]() { on_process_jobs_result(reply, callee); });
 }
 
-void Server::on_process_jobs_result(QNetworkReply *reply)
+void Server::on_process_jobs_result(QNetworkReply *reply, Callee callee)
 {
+    std::function<void()> success;
+    std::function<void(QString)> error;
+
+    switch (callee) {
+    case CALLEE_VIDEOS:
+        success = [this]() {
+            emit videos_req_process_jobs_success();
+        };
+        error = [this](QString message) {
+            videos_req_process_jobs_error(message);
+        };
+        break;
+    case CALLEE_PROCESS_JOBS:
+        success = [this]() {
+            emit process_jobs_req_process_jobs_success();
+        };
+        error = [this](QString message) {
+            process_jobs_req_process_jobs_error(message);
+        };
+        break;
+    default: break;
+    }
+
     reply->deleteLater();
     if (reply->error() != QNetworkReply::NoError) {
-        emit req_process_jobs_error(reply->errorString());
+        if (error) error(reply->errorString());
         return;
     }
 
@@ -590,8 +613,30 @@ void Server::on_process_jobs_result(QNetworkReply *reply)
     if (doc.isArray()) {
         process_jobs = doc.array().toVariantList();
         emit process_jobs_changed();
-        emit req_process_jobs_success();
+        if (success) success();
     } else {
-        emit req_process_jobs_error("Invalid data recieved from server.");
+        if (error) error("Invalid data recieved from server.");
     }
+}
+
+void Server::abort_batch(const QString &batch_id)
+{
+    QUrl url(QString("http://%1:8080/abort_batch").arg(ip));
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader,
+        "application/json");
+    QString body = QString("{\"batch_id\": \"%1\"}").arg(batch_id);
+    QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
+    connect(reply, &QNetworkReply::finished,
+        this, [this, reply]() { on_abort_batch_result(reply);});
+}
+
+void Server::on_abort_batch_result(QNetworkReply *reply)
+{
+    reply->deleteLater();
+    if (reply->error() != QNetworkReply::NoError) {
+        emit abort_batch_error(reply->errorString());
+        return;
+    }
+    emit abort_batch_success();
 }
