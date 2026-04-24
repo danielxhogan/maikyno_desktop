@@ -84,7 +84,7 @@ Item {
 
                 onClicked: {
                     shows_root.loading = true
-                    shows_root_err_msg.text = "Scanning library"
+                    shows_err_msg.text = "Scanning library"
                     Server.scan_library(app.library_id, Server.CALLEE_SHOWS)
                 }
             }

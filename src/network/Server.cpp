@@ -116,13 +116,8 @@ void Server::req_library_contents(const QString &libary_id,
         QString body = QString("{\"library_id\": \"%1\"}").arg(libary_id);
         QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
 
-        if (callee == CALLEE_LIBRARIES) {
-            connect(reply, &QNetworkReply::finished,
-                this, [this, reply]() { on_initial_movies_result(reply); });
-        } else if (callee == CALLEE_MEDIA_DIRS) {
-            connect(reply, &QNetworkReply::finished,
-                this, [this, reply]() { on_post_scan_movies_result(reply); });
-        }
+        connect(reply, &QNetworkReply::finished,
+            this, [this, reply, callee]() { on_movies_result(reply, callee); });
     }
     else if (lib_type == LIBRARY_TYPE_SHOW) {
         QUrl url(QString("http://%1:8080/get_shows").arg(ip));
@@ -132,13 +127,8 @@ void Server::req_library_contents(const QString &libary_id,
         QString body = QString("{\"library_id\": \"%1\"}").arg(libary_id);
         QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
 
-        if (callee == CALLEE_LIBRARIES) {
-            connect(reply, &QNetworkReply::finished,
-                this, [this, reply]() { on_initial_shows_result(reply); });
-        } else if (callee == CALLEE_SHOWS) {
-            connect(reply, &QNetworkReply::finished,
-                this, [this, reply]() { on_post_scan_shows_result(reply); });
-        }
+        connect(reply, &QNetworkReply::finished,
+            this, [this, reply, callee]() { on_shows_result(reply, callee); });
     }
 }
 
@@ -147,11 +137,35 @@ QVariantList Server::get_shows() const
     return shows;
 }
 
-void Server::on_initial_shows_result(QNetworkReply *reply)
+void Server::on_shows_result(QNetworkReply *reply, Callee callee)
 {
+    std::function<void()> success_signal;
+    std::function<void(QString)> error_signal;
+
+    switch (callee) {
+    case CALLEE_LIBRARIES:
+        success_signal = [this]() {
+            emit initial_req_shows_success();
+        };
+        error_signal = [this](QString message) {
+            emit initial_req_shows_error(message);
+        };
+        break;
+    case CALLEE_SHOWS:
+        success_signal = [this]() {
+            emit post_scan_req_shows_success();
+        };
+        error_signal = [this](QString message) {
+            emit post_scan_req_shows_error(message);
+        };
+        break;
+    default: break;
+    }
+
     reply->deleteLater();
     if (reply->error() != QNetworkReply::NoError) {
-        emit initial_req_shows_error(reply->errorString());
+        if (error_signal)
+            error_signal(reply->errorString());
         return;
     }
 
@@ -159,27 +173,11 @@ void Server::on_initial_shows_result(QNetworkReply *reply)
     if (doc.isArray()) {
         shows = doc.array().toVariantList();
         emit shows_changed();
-        emit initial_req_shows_success();
+        if (success_signal)
+            success_signal();
     } else {
-        emit initial_req_shows_error("Invalid data recieved from server.");
-    }
-}
-
-void Server::on_post_scan_shows_result(QNetworkReply *reply)
-{
-    reply->deleteLater();
-    if (reply->error() != QNetworkReply::NoError) {
-        emit post_scan_req_shows_error(reply->errorString());
-        return;
-    }
-
-    QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
-    if (doc.isArray()) {
-        shows = doc.array().toVariantList();
-        emit shows_changed();
-        emit post_scan_req_shows_success();
-    } else {
-        emit post_scan_req_shows_error("Invalid data recieved from server.");
+        if (error_signal)
+            error_signal("Invalid data recieved from server.");
     }
 }
 
@@ -252,11 +250,35 @@ void Server::on_seasons_result(QNetworkReply *reply)
     }
 }
 
-void Server::on_initial_movies_result(QNetworkReply *reply)
+void Server::on_movies_result(QNetworkReply *reply, Callee callee)
 {
+    std::function<void()> success_signal;
+    std::function<void(QString)> error_signal;
+
+    switch (callee) {
+    case CALLEE_LIBRARIES:
+        success_signal = [this]() {
+            emit initial_req_movies_success();
+        };
+        error_signal = [this](QString message) {
+            emit initial_req_movies_error(message);
+        };
+        break;
+    case CALLEE_MEDIA_DIRS:
+        success_signal = [this]() {
+            emit post_scan_req_movies_success();
+        };
+        error_signal = [this](QString message) {
+            emit post_scan_req_movies_error(message);
+        };
+        break;
+    default: break;
+    }
+
     reply->deleteLater();
     if (reply->error() != QNetworkReply::NoError) {
-        emit initial_req_movies_error(reply->errorString());
+        if (error_signal)
+            error_signal(reply->errorString());
         return;
     }
 
@@ -264,27 +286,11 @@ void Server::on_initial_movies_result(QNetworkReply *reply)
     if (doc.isArray()) {
         media_dirs = doc.array().toVariantList();
         emit media_dirs_changed();
-        emit initial_req_movies_success();
+        if (success_signal)
+            success_signal();
     } else {
-        emit initial_req_movies_error("Invalid data recieved from server.");
-    }
-}
-
-void Server::on_post_scan_movies_result(QNetworkReply *reply)
-{
-    reply->deleteLater();
-    if (reply->error() != QNetworkReply::NoError) {
-        emit post_scan_req_movies_error(reply->errorString());
-        return;
-    }
-
-    QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
-    if (doc.isArray()) {
-        media_dirs = doc.array().toVariantList();
-        emit media_dirs_changed();
-        emit post_scan_req_movies_success();
-    } else {
-        emit post_scan_req_movies_error("Invalid data recieved from server.");
+        if (error_signal)
+            error_signal("Invalid data recieved from server.");
     }
 }
 
@@ -336,31 +342,37 @@ void Server::scan_library(const QString &library_id, Callee callee)
 
 void Server::on_scan_library_result(QNetworkReply *reply, Callee callee)
 {
-    reply->deleteLater();
-    if (reply->error() != QNetworkReply::NoError) {
-        switch (callee) {
-        case CALLEE_MEDIA_DIRS:
-        case CALLEE_SHOWS:
-            emit scan_library_error(reply->errorString());
-            break;
-        case CALLEE_VIDEOS:
-            emit videos_scan_library_error(reply->errorString());
-            break;
-        default: break;
-        }
-        return;
-    }
+    std::function<void()> success_signal;
+    std::function<void(QString)> error_signal;
 
     switch (callee) {
     case CALLEE_MEDIA_DIRS:
     case CALLEE_SHOWS:
-        emit scan_library_success();
+        success_signal = [this]() {
+            emit scan_library_success();
+        };
+        error_signal = [this](QString message) {
+            emit scan_library_error(message);
+        };
         break;
     case CALLEE_VIDEOS:
-        emit videos_scan_library_success();
+        success_signal = [this]() {
+            emit videos_scan_library_success();
+        };
+        error_signal = [this](QString message) {
+            emit videos_scan_library_error(message);
+        };
         break;
     default: break;
     }
+
+    reply->deleteLater();
+    if (reply->error() != QNetworkReply::NoError) {
+        if (error_signal)
+            error_signal(reply->errorString());
+        return;
+    }
+    success_signal();
 }
 
 QVariantList Server::get_videos() const
@@ -376,23 +388,47 @@ void Server::req_videos(const QString &media_dir_id, Callee callee)
     QString body = QString("{\"media_dir_id\": \"%1\"}").arg(media_dir_id);
     QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
 
-    if (callee == CALLEE_MEDIA_DIRS) {
-        connect(reply, &QNetworkReply::finished,
-            this, [this, reply]() { on_media_dirs_videos_result(reply); });
-    } else if (callee == CALLEE_VIDEOS) {
-        connect(reply, &QNetworkReply::finished,
-            this, [this, reply]() { on_videos_videos_result(reply); });
-    } else if (callee == CALLEE_PLAYER) {
-        connect(reply, &QNetworkReply::finished,
-            this, [this, reply]() { on_player_videos_result(reply); });
-    }
+    connect(reply, &QNetworkReply::finished,
+        this, [this, reply, callee]() { on_videos_result(reply, callee); });
 }
 
-void Server::on_media_dirs_videos_result(QNetworkReply *reply)
+void Server::on_videos_result(QNetworkReply *reply, Callee callee)
 {
+    std::function<void()> success_signal;
+    std::function<void(QString)> error_signal;
+
+    switch (callee) {
+    case CALLEE_MEDIA_DIRS:
+        success_signal = [this]() {
+            emit media_dirs_req_videos_success();
+        };
+        error_signal = [this](QString message) {
+            emit media_dirs_req_videos_error(message);
+        };
+        break;
+    case CALLEE_VIDEOS:
+        success_signal = [this]() {
+            emit videos_req_videos_success();
+        };
+        error_signal = [this](QString message) {
+            emit videos_req_videos_error(message);
+        };
+        break;
+    case CALLEE_PLAYER:
+        success_signal = [this]() {
+            emit player_req_videos_success();
+        };
+        error_signal = [this](QString message) {
+            emit player_req_videos_error(message);
+        };
+        break;
+    default: break;
+    }
+
     reply->deleteLater();
     if (reply->error() != QNetworkReply::NoError) {
-        emit media_dirs_req_videos_error(reply->errorString());
+        if (error_signal)
+            error_signal(reply->errorString());
         return;
     }
 
@@ -400,45 +436,11 @@ void Server::on_media_dirs_videos_result(QNetworkReply *reply)
     if (doc.isArray()) {
         videos = doc.array().toVariantList();
         emit videos_changed();
-        emit media_dirs_req_videos_success();
+        if (success_signal)
+            success_signal();
     } else {
-        emit media_dirs_req_videos_error("Invalid data recieved from server.");
-    }
-}
-
-void Server::on_videos_videos_result(QNetworkReply *reply)
-{
-    reply->deleteLater();
-    if (reply->error() != QNetworkReply::NoError) {
-        emit videos_req_videos_error(reply->errorString());
-        return;
-    }
-
-    QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
-    if (doc.isArray()) {
-        videos = doc.array().toVariantList();
-        emit videos_changed();
-        emit videos_req_videos_success();
-    } else {
-        emit videos_req_videos_error("Invalid data recieved from server.");
-    }
-}
-
-void Server::on_player_videos_result(QNetworkReply *reply)
-{
-    reply->deleteLater();
-    if (reply->error() != QNetworkReply::NoError) {
-        emit player_req_videos_error(reply->errorString());
-        return;
-    }
-
-    QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
-    if (doc.isArray()) {
-        videos = doc.array().toVariantList();
-        emit videos_changed();
-        emit player_req_videos_success();
-    } else {
-        emit player_req_videos_error("Invalid data recieved from server.");
+        if (error_signal)
+            error_signal("Invalid data recieved from server.");
     }
 }
 
@@ -580,24 +582,24 @@ void Server::req_process_jobs(const QString &media_dir_id, Callee callee)
 
 void Server::on_process_jobs_result(QNetworkReply *reply, Callee callee)
 {
-    std::function<void()> success;
-    std::function<void(QString)> error;
+    std::function<void()> success_signal;
+    std::function<void(QString)> error_signal;
 
     switch (callee) {
     case CALLEE_VIDEOS:
-        success = [this]() {
+        success_signal = [this]() {
             emit videos_req_process_jobs_success();
         };
-        error = [this](QString message) {
-            videos_req_process_jobs_error(message);
+        error_signal = [this](QString message) {
+            emit videos_req_process_jobs_error(message);
         };
         break;
     case CALLEE_PROCESS_JOBS:
-        success = [this]() {
+        success_signal = [this]() {
             emit process_jobs_req_process_jobs_success();
         };
-        error = [this](QString message) {
-            process_jobs_req_process_jobs_error(message);
+        error_signal = [this](QString message) {
+            emit process_jobs_req_process_jobs_error(message);
         };
         break;
     default: break;
@@ -605,7 +607,8 @@ void Server::on_process_jobs_result(QNetworkReply *reply, Callee callee)
 
     reply->deleteLater();
     if (reply->error() != QNetworkReply::NoError) {
-        if (error) error(reply->errorString());
+        if (error_signal)
+            error_signal(reply->errorString());
         return;
     }
 
@@ -613,9 +616,11 @@ void Server::on_process_jobs_result(QNetworkReply *reply, Callee callee)
     if (doc.isArray()) {
         process_jobs = doc.array().toVariantList();
         emit process_jobs_changed();
-        if (success) success();
+        if (success_signal)
+            success_signal();
     } else {
-        if (error) error("Invalid data recieved from server.");
+        if (error_signal)
+            error_signal("Invalid data recieved from server.");
     }
 }
 

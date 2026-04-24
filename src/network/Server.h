@@ -180,17 +180,13 @@ public slots:
 private slots:
     void on_libraries_result(QNetworkReply *reply);
     void on_collections_result(QNetworkReply *reply);
-    void on_initial_shows_result(QNetworkReply *reply);
-    void on_post_scan_shows_result(QNetworkReply *reply);
+    void on_shows_result(QNetworkReply *reply, Callee callee);
     void on_collection_shows_result(QNetworkReply *reply);
     void on_seasons_result(QNetworkReply *reply);
-    void on_initial_movies_result(QNetworkReply *reply);
-    void on_post_scan_movies_result(QNetworkReply *reply);
+    void on_movies_result(QNetworkReply *reply, Callee callee);
     void on_collection_movies_result(QNetworkReply *reply);
     void on_scan_library_result(QNetworkReply *reply, Callee callee);
-    void on_media_dirs_videos_result(QNetworkReply *reply);
-    void on_videos_videos_result(QNetworkReply *reply);
-    void on_player_videos_result(QNetworkReply *reply);
+    void on_videos_result(QNetworkReply *reply, Callee callee);
     void on_rename_extras_result(QNetworkReply *reply);
     void on_save_state_result(QNetworkReply *reply);
     void on_video_streams_result(QNetworkReply *reply);
