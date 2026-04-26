@@ -63,60 +63,80 @@ Item {
                     ? app.media_dir_name
                     : app.show_name + " " + app.media_dir_name
                 font.bold: true
-                font.pixelSize: 28
+                font.pixelSize: 30
             }
 
             ListView {
-                model: Server.process_jobs
+                model: Server.process_job_batches
                 width: parent.width
                 height: contentHeight
-                spacing: 30
+                spacing: 60
 
                 delegate: Column {
-                    spacing: 15
+                    spacing: 20
+                    readonly property int batch_idx: index
 
-                    Row {
-                        spacing: 20
+                    Text {
+                        id: batch_title
+                        text: "Batch " + (batch_idx + 1)
+                        font.bold: true
+                        font.pixelSize: 30
+                    }
 
-                        Text {
-                            text: modelData.process_job.video_name
-                            font.bold: true
-                            font.pixelSize: 24
+                    Button {
+                        text: "Abort"
+                        visible: modelData.active
+
+                        onClicked: {
+                            process_jobs_root.loading = true
+                            Server.abort_batch(modelData.batch_id)
                         }
+                    }
 
-                        Button {
-                            text: "Abort"
-                            visible: modelData.process_job.job_status == "pending"
-                                || modelData.process_job.job_status == "processing"
+                    ListView {
+                        model: modelData.process_jobs
+                        width: parent.width
+                        height: contentHeight
+                        spacing: 40
 
-                            onClicked: {
-                                process_jobs_root.loading = true
-                                Server.abort_batch(modelData.process_job.batch_id)
+                        delegate: Column {
+                            spacing: 20
+
+                            Row {
+                                spacing: 20
+
+                                Text {
+                                    text: modelData.process_job.video_name
+                                    font.bold: true
+                                    font.pixelSize: 24
+                                }
+
+                            }
+
+                            Row {
+                                spacing: 15
+
+                                Text {
+                                    text: "Created: "
+                                        + modelData.process_job.created.slice(0, 10)
+                                        + " "
+                                        + modelData.process_job.created.slice(11, 19)
+
+                                    font.bold: true
+                                    font.pixelSize: 20
+                                }
+                                Text {
+
+                                    text: "Status: "
+                                        + modelData.process_job.job_status
+
+                                    font.bold: true
+                                    font.pixelSize: 20
+                                }
                             }
                         }
                     }
 
-                    Row {
-                        spacing: 15
-
-                        Text {
-                            text: "Created: "
-                                + modelData.process_job.created.slice(0, 10)
-                                + " "
-                                + modelData.process_job.created.slice(11, 19)
-
-                            font.bold: true
-                            font.pixelSize: 20
-                        }
-                        Text {
-
-                            text: "Status: "
-                                + modelData.process_job.job_status
-
-                            font.bold: true
-                            font.pixelSize: 20
-                        }
-                    }
                 }
             }
         }

@@ -43,8 +43,8 @@ class Server : public QObject {
     Q_PROPERTY(QVariantList video_streams
         READ get_video_streams NOTIFY video_streams_changed);
 
-    Q_PROPERTY(QVariantList process_jobs
-        READ get_process_jobs NOTIFY process_jobs_changed);
+    Q_PROPERTY(QVariantList process_job_batches
+        READ get_process_job_batches NOTIFY process_job_batches_changed);
 
 public:
     explicit Server(QObject *parent = nullptr);
@@ -59,7 +59,7 @@ public:
     QVariantList get_videos() const;
     void save_state(SaveStateParams *params);
     QVariantList get_video_streams() const;
-    QVariantList get_process_jobs() const;
+    QVariantList get_process_job_batches() const;
 
     enum LibraryType {
         LIBRARY_TYPE_MOVIE,
@@ -90,7 +90,7 @@ private:
     QVariantList collection_movies;
     QVariantList videos;
     QVariantList video_streams;
-    QVariantList process_jobs;
+    QVariantList process_job_batches;
 
 signals:
     void ip_changed();
@@ -155,7 +155,7 @@ signals:
     void videos_req_process_jobs_error(QString message);
     void process_jobs_req_process_jobs_success();
     void process_jobs_req_process_jobs_error(QString message);
-    void process_jobs_changed();
+    void process_job_batches_changed();
 
     void abort_batch_success();
     void abort_batch_error(QString message);

@@ -61,7 +61,6 @@ Item {
                         || stream.codec == "Dolby TrueHD + Dolby Atmos"
 
                     let surround = stream.nb_channels > 2
-
                     let second_rendition = surround && !lossless
 
                     process_video_info.audio_streams.push({
@@ -221,7 +220,7 @@ Item {
             ? app.media_dir_name
             : app.show_name + " " + app.media_dir_name
         font.bold: true
-        font.pixelSize: 28
+        font.pixelSize: 30
     }
 
     Text {
@@ -236,7 +235,7 @@ Item {
         model: Server.video_streams
         width: parent.width
         height: contentHeight
-        spacing: 45
+        spacing: 60
         clip: true
 
     delegate: Column {
@@ -252,7 +251,7 @@ Item {
             text: modelData.video.name
             height: contentHeight + 10
             font.bold: true
-            font.pixelSize: 24
+            font.pixelSize: 30
         }
 
         CheckBox {
@@ -305,7 +304,7 @@ Item {
             text: "Stream "  + modelData.stream_idx
             height: contentHeight + 5
             font.bold: true
-            font.pixelSize: 20
+            font.pixelSize: 24
         }
 
         Text {
@@ -313,13 +312,13 @@ Item {
             visible: modelData.title
             width: modelData.title ? contentWidth : 0
             font.bold: true
-            font.pixelSize: 20
+            font.pixelSize: 24
         }
 
         Text {
             text: "Codec: "  + modelData.codec
             font.bold: true
-            font.pixelSize: 20
+            font.pixelSize: 24
         }
 
         Text {
@@ -327,7 +326,7 @@ Item {
             visible: modelData.height
             width: modelData.height ? contentWidth : 0
             font.bold: true
-            font.pixelSize: 20
+            font.pixelSize: 24
         }
 
         Text {
@@ -335,7 +334,7 @@ Item {
             visible: modelData.width
             width: modelData.width ? contentWidth : 0
             font.bold: true
-            font.pixelSize: 20
+            font.pixelSize: 24
         }
 
         Text {
@@ -343,7 +342,7 @@ Item {
             visible: modelData.interlaced
             width: modelData.interlaced ? contentWidth : 0
             font.bold: true
-            font.pixelSize: 20
+            font.pixelSize: 24
         }
 
         CheckBox {

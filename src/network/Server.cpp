@@ -563,9 +563,9 @@ void Server::on_process_media_result(QNetworkReply *reply)
     emit process_media_success();
 }
 
-QVariantList Server::get_process_jobs() const
+QVariantList Server::get_process_job_batches() const
 {
-    return process_jobs;
+    return process_job_batches;
 }
 
 void Server::req_process_jobs(const QString &media_dir_id, Callee callee)
@@ -614,8 +614,8 @@ void Server::on_process_jobs_result(QNetworkReply *reply, Callee callee)
 
     QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
     if (doc.isArray()) {
-        process_jobs = doc.array().toVariantList();
-        emit process_jobs_changed();
+        process_job_batches = doc.array().toVariantList();
+        emit process_job_batches_changed();
         if (success_signal)
             success_signal();
     } else {
