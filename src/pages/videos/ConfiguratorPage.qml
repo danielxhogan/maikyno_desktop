@@ -56,6 +56,7 @@ Item {
                     idx_map.push(process_video_info.audio_streams.length)
 
                     let lossless = stream.codec == "DTS-HD MA"
+                        || stream.codec == "DTS-HD HRA"
                         || stream.codec == "DTS-HD MA + DTS:X"
                         || stream.codec == "Dolby TrueHD"
                         || stream.codec == "Dolby TrueHD + Dolby Atmos"
