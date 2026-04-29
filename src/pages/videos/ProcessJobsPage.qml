@@ -17,8 +17,8 @@ Item {
 
         function onAbort_batch_error(message)
         {
-            videos_root.loading = false
-            vidoes_err_msg.text = message
+            process_jobs_root.loading = false
+            process_jobs_err_msg.text = message
         }
     }
 
@@ -66,30 +66,54 @@ Item {
                 font.pixelSize: 30
             }
 
+            Text {
+                id: process_jobs_err_msg
+                anchors.horizontalCenter: parent.horizontalCenter
+                font.bold: true
+                font.pixelSize: 16
+                text: ""
+            }
+
             ListView {
                 model: Server.process_job_batches
                 width: parent.width
                 height: contentHeight
-                spacing: 60
+                spacing: 100
 
                 delegate: Column {
-                    spacing: 20
                     readonly property int batch_idx: index
 
-                    Text {
-                        id: batch_title
-                        text: "Batch " + (batch_idx + 1)
-                        font.bold: true
-                        font.pixelSize: 30
-                    }
+                    Row {
+                        spacing: 25
 
-                    Button {
-                        text: "Abort"
-                        visible: modelData.active
+                        Text {
+                            id: batch_title
+                            text: "Batch " + (batch_idx + 1)
+                            font.bold: true
+                            font.pixelSize: 30
+                            anchors.baseline: parent.baseline
+                        }
 
-                        onClicked: {
-                            process_jobs_root.loading = true
-                            Server.abort_batch(modelData.batch_id)
+                        Text {
+                            text: "Created: "
+                                + modelData.batch.created.slice(0, 10)
+                                + " "
+                                + modelData.batch.created.slice(11, 19)
+
+                            font.bold: true
+                            font.pixelSize: 20
+                            anchors.baseline: parent.baseline
+                        }
+
+                        Button {
+                            text: "Abort"
+                            visible: modelData.active
+                            anchors.baseline: parent.baseline
+
+                            onClicked: {
+                                process_jobs_root.loading = true
+                                Server.abort_batch(modelData.batch.id)
+                            }
                         }
                     }
 
@@ -109,34 +133,21 @@ Item {
                                     text: modelData.process_job.video_name
                                     font.bold: true
                                     font.pixelSize: 24
+                                    anchors.bottom: parent.bottom
                                 }
 
-                            }
-
-                            Row {
-                                spacing: 15
-
                                 Text {
-                                    text: "Created: "
-                                        + modelData.process_job.created.slice(0, 10)
-                                        + " "
-                                        + modelData.process_job.created.slice(11, 19)
-
-                                    font.bold: true
-                                    font.pixelSize: 20
-                                }
-                                Text {
-
                                     text: "Status: "
                                         + modelData.process_job.job_status
 
                                     font.bold: true
                                     font.pixelSize: 20
+                                    anchors.bottom: parent.bottom
                                 }
+
                             }
                         }
                     }
-
                 }
             }
         }
