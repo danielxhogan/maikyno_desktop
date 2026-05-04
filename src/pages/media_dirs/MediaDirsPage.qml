@@ -92,9 +92,7 @@ Item {
         Column {
             id: main_col
             anchors.top: parent.top
-            anchors.left: parent.left
             anchors.topMargin: 20
-            anchors.leftMargin: 20
             width: parent.width
             spacing: 40
 

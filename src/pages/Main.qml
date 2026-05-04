@@ -8,21 +8,21 @@ ApplicationWindow {
     visible: true
     title: qsTr("maikyno")
 
-    property string library_id;
-    property string library_name;
-    property bool viewing_collection;
-    property bool movie_library;
-    property string show_name;
-    property string media_dir_id;
-    property string media_dir_name;
-    property string video_id;
+    property string library_id
+    property string library_name
+    property bool viewing_collection
+    property bool movie_library
+    property string show_name
+    property string media_dir_id
+    property string media_dir_name
+    property string video_id
 
-    property string src;
-    property string ts;
-    property string a_stream_idx;
-    property string v_stream_idx;
-    property string s_stream_idx;
-    property string s_pos;
+    property string src
+    property string ts
+    property string a_stream_idx
+    property string v_stream_idx
+    property string s_stream_idx
+    property string s_pos
 
     StackView {
         id: pages_stack
@@ -42,6 +42,10 @@ ApplicationWindow {
     Component {
         id: libraries_component
         LibrariesPage { id: libraries_page }
+    }
+    Component {
+        id: create_library_component
+        CreateLibraryPage { id: create_library_page }
     }
     Component {
         id: shows_component

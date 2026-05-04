@@ -10,6 +10,7 @@ qt_add_qml_module(mkd
         "pages/Main.qml"
         "pages/connect/ConnectPage.qml"
         "pages/libraries/LibrariesPage.qml"
+        "pages/libraries/CreateLibraryPage.qml"
         "pages/shows/ShowsPage.qml"
         "pages/media_dirs/MediaDirsPage.qml"
         "pages/videos/VideosPage.qml"
