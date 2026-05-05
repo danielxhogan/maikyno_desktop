@@ -9,7 +9,7 @@ Item {
     Connections {
         target: Server
 
-        function onReq_libraries_success()
+        function onConnect_req_libraries_success()
         {
             connect_root.loading = false
             connect_err_msg.text = ""
@@ -17,7 +17,7 @@ Item {
             pages_stack.push(libraries_component)
         }
 
-        function onReq_libraries_error(message)
+        function onConnect_req_libraries_error(message)
         {
             connect_root.loading = false
             connect_err_msg.text = message
@@ -63,7 +63,7 @@ Item {
                 enabled: !connect_root.loading
                 onClicked: {
                     connect_root.loading = true
-                    Server.req_libraries()
+                    Server.req_libraries(Server.CALLEE_CONNECT)
                 }
             }
         }

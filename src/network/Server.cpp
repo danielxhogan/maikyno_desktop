@@ -43,21 +43,45 @@ QVariantList Server::get_libraries() const
     return libraries;
 }
 
-void Server::req_libraries()
+void Server::req_libraries(Callee callee)
 {
     QUrl url(QString("http://%1:8080/get_libraries").arg(ip));
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     QNetworkReply *reply = net_mgr->post(request, "{}");
     connect(reply, &QNetworkReply::finished,
-        this, [this, reply]() { on_libraries_result(reply); });
+        this, [this, reply, callee]() { on_libraries_result(reply, callee); });
 }
 
-void Server::on_libraries_result(QNetworkReply *reply)
+void Server::on_libraries_result(QNetworkReply *reply, Callee callee)
 {
+    std::function<void()> success_signal;
+    std::function<void(QString)> error_signal;
+
+    switch (callee) {
+    case CALLEE_CONNECT:
+        success_signal = [this]() {
+            emit connect_req_libraries_success();
+        };
+        error_signal = [this](QString message) {
+            emit connect_req_libraries_error(message);
+        };
+        break;
+    case CALLEE_CREATE_LIBRARY:
+        success_signal = [this]() {
+            emit create_library_req_libraries_success();
+        };
+        error_signal = [this](QString message) {
+            emit create_library_req_libraries_error(message);
+        };
+        break;
+    default: break;
+    }
+
     reply->deleteLater();
     if (reply->error() != QNetworkReply::NoError) {
-        emit req_libraries_error(reply->errorString());
+        if (error_signal)
+            emit error_signal(reply->errorString());
         return;
     }
 
@@ -65,9 +89,11 @@ void Server::on_libraries_result(QNetworkReply *reply)
     if (doc.isArray()) {
         libraries = doc.array().toVariantList();
         emit libraries_changed();
-        emit req_libraries_success();
+        if (success_signal)
+            emit success_signal();
     } else {
-        emit req_libraries_error("Invalid data recieved from server.");
+        if (error_signal)
+            emit error_signal("Invalid data recieved from server.");
     }
 }
 

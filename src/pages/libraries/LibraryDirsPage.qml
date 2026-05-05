@@ -12,7 +12,8 @@ Item {
 
         function onCreate_library_dir_success()
         {
-
+            library_dirs_root.loading = false
+            create_library_dir_err_msg.text = ""
         }
 
         function onCreate_library_dir_error(message)
@@ -88,8 +89,13 @@ Item {
 
                 onClicked: {
                     library_dirs_root.loading = true
-                    Server.create_library_dir(null,
-                        library_dirs_root.new_library_dir)
+                    if (app.creating_library) {
+                        Server.create_library_dir(null,
+                            library_dirs_root.new_library_dir)
+                    } else {
+                        Server.create_library_dir(app.library_id,
+                            library_dirs_root.new_library_dir)
+                    }
                 }
             }
         }

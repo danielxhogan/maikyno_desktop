@@ -14,13 +14,24 @@ Item {
 
         function onCreate_library_success()
         {
+            Server.req_libraries(Server.CALLEE_CREATE_LIBRARY)
+        }
+
+        function onCreate_library_error(message)
+        {
+            create_library_root.loading = false
+            create_library_err_msg.text = message
+        }
+
+        function onCreate_library_req_libraries_success()
+        {
             create_library_root.loading = false
             create_library_err_msg.text = ""
             app.creating_library = true
             pages_stack.push(library_dirs_component)
         }
 
-        function onCreate_library_error(message)
+        function onCreate_library_req_libraries_error(message)
         {
             create_library_root.loading = false
             create_library_err_msg.text = message
