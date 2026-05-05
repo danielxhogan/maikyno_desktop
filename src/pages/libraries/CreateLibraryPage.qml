@@ -16,6 +16,7 @@ Item {
         {
             create_library_root.loading = false
             create_library_err_msg.text = ""
+            app.creating_library = true
             pages_stack.push(library_dirs_component)
         }
 

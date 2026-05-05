@@ -10,6 +10,7 @@ ApplicationWindow {
 
     property string library_id
     property string library_name
+    property bool creating_library
     property bool viewing_collection
     property bool movie_library
     property string show_name

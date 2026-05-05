@@ -1,10 +1,26 @@
 import QtQuick
 import QtQuick.Controls
+import Server
 
 Item {
     id: library_dirs_root
     property bool loading: false
     property string new_library_dir: ""
+
+    Connections {
+        target: Server
+
+        function onCreate_library_dir_success()
+        {
+
+        }
+
+        function onCreate_library_dir_error(message)
+        {
+            library_dirs_root.loading = false
+            create_library_dir_err_msg.text = message
+        }
+    }
 
     ScrollView {
         width: parent.width
@@ -19,7 +35,12 @@ Item {
             Button {
                 text: "Back"
                 anchors.left: parent.left
-                onClicked: pages_stack.pop()
+                onClicked: {
+                    pages_stack.pop()
+                    if (app.creating_library) {
+                        pages_stack.pop()
+                    }
+                }
             }
         }
 
@@ -39,7 +60,7 @@ Item {
             }
 
             Text {
-                id: create_library_err_msg
+                id: create_library_dir_err_msg
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: ""
             }
@@ -55,7 +76,7 @@ Item {
             TextField {
                 anchors.horizontalCenter: parent.horizontalCenter
                 onTextEdited: {
-                    create_library_root.new_library_dir = text
+                    library_dirs_root.new_library_dir = text
                 }
             }
 
@@ -66,9 +87,9 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 onClicked: {
-                    create_library_root.loading = true
-                    // Server.create_library(create_library_root.library_type,
-                    //     create_library_root.library_name)
+                    library_dirs_root.loading = true
+                    Server.create_library_dir(null,
+                        library_dirs_root.new_library_dir)
                 }
             }
         }
