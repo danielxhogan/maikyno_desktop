@@ -43,7 +43,7 @@ QVariantList Server::get_libraries() const
     return libraries;
 }
 
-void Server::req_libraries(const QString &ip)
+void Server::req_libraries()
 {
     QUrl url(QString("http://%1:8080/get_libraries").arg(ip));
     QNetworkRequest request(url);

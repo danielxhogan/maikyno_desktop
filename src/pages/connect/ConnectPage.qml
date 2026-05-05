@@ -63,7 +63,7 @@ Item {
                 enabled: !connect_root.loading
                 onClicked: {
                     connect_root.loading = true
-                    Server.req_libraries(ip_field.text)
+                    Server.req_libraries()
                 }
             }
         }

@@ -170,7 +170,7 @@ signals:
 
 public slots:
     enum LibraryType library_type_qstring_to_enum(QString lib_type_qstring);
-    void req_libraries(const QString &ip);
+    void req_libraries();
     void create_library(const QString &library_type,
         const QString &library_name);
     void create_library_dir(const QString &library_id,
