@@ -48,6 +48,10 @@ ApplicationWindow {
         CreateLibraryPage { id: create_library_page }
     }
     Component {
+        id: library_dirs_component
+        LibraryDirsPage { id: library_dirs_page }
+    }
+    Component {
         id: shows_component
         ShowsPage { id: shows_page }
     }

@@ -83,6 +83,8 @@ private:
     QString ip;
     QNetworkAccessManager *net_mgr;
     QVariantList libraries;
+    QString library_id;
+    QVariantList library_dirs;
     QVariantList collections;
     QVariantList shows;
     QVariantList collection_shows;
@@ -98,6 +100,9 @@ signals:
     void req_libraries_success();
     void req_libraries_error(QString message);
     void libraries_changed();
+
+    void create_library_success();
+    void create_library_error(QString message);
 
     void req_collections_success();
     void req_collections_error(QString message);
@@ -163,6 +168,8 @@ signals:
 public slots:
     enum LibraryType library_type_qstring_to_enum(QString lib_type_qstring);
     void req_libraries(const QString &ip);
+    void create_library(const QString &library_type,
+        const QString &library_name);
     void req_collections(const QString &library_id);
     void req_library_contents(const QString &library_id,
         LibraryType lib_type, Callee callee);
@@ -179,6 +186,7 @@ public slots:
 
 private slots:
     void on_libraries_result(QNetworkReply *reply);
+    void on_create_library_result(QNetworkReply *reply);
     void on_collections_result(QNetworkReply *reply);
     void on_shows_result(QNetworkReply *reply, Callee callee);
     void on_collection_shows_result(QNetworkReply *reply);

@@ -71,6 +71,48 @@ void Server::on_libraries_result(QNetworkReply *reply)
     }
 }
 
+void Server::create_library(const QString &library_type,
+    const QString &library_name)
+{
+    QUrl url(QString("http://%1:8080/new_library").arg(ip));
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    QString body = QString("{\
+        \"name\": \"%1\",\
+        \"paths\": [],\
+        \"media_type\": \"%2\"}")
+        .arg(library_name)
+        .arg(library_type);
+
+    QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
+    connect(reply, &QNetworkReply::finished,
+        this, [this, reply]() { on_create_library_result(reply); });
+}
+
+void Server::on_create_library_result(QNetworkReply *reply)
+{
+    reply->deleteLater();
+    if (reply->error() != QNetworkReply::NoError) {
+        emit create_library_error(reply->errorString());
+        return;
+    }
+
+    QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+    if (doc.isObject()) {
+        QVariantMap new_library = doc.toVariant().toMap();
+
+        if (new_library["id"].typeId() == QMetaType::QString) {
+            library_dirs = QVariantList();
+            library_id = new_library["id"].toString();
+            emit create_library_success();
+            return;
+        }
+    }
+
+    emit create_library_error(reply->errorString());
+}
+
 QVariantList Server::get_collections() const
 {
     return collections;

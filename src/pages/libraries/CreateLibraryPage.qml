@@ -1,12 +1,30 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import Server
 
 Item {
     id: create_library_root
     property bool loading: false
     property string library_type: "movie"
     property string library_name
+
+    Connections {
+        target: Server
+
+        function onCreate_library_success()
+        {
+            create_library_root.loading = false
+            create_library_err_msg.text = ""
+            pages_stack.push(library_dirs_component)
+        }
+
+        function onCreate_library_error(message)
+        {
+            create_library_root.loading = false
+            create_library_err_msg.text = message
+        }
+    }
 
     ScrollView {
         width: parent.width
@@ -38,6 +56,12 @@ Item {
                 text: "Create Library"
                 font.bold: true
                 font.pixelSize: 24
+            }
+
+            Text {
+                id: create_library_err_msg
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: ""
             }
 
             Text {
@@ -106,6 +130,12 @@ Item {
                 leftPadding: 10
                 rightPadding: 10
                 anchors.horizontalCenter: parent.horizontalCenter
+
+                onClicked: {
+                    create_library_root.loading = true
+                    Server.create_library(create_library_root.library_type,
+                        create_library_root.library_name)
+                }
             }
         }
     }
