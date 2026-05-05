@@ -139,6 +139,69 @@ void Server::on_create_library_result(QNetworkReply *reply)
     emit create_library_error(reply->errorString());
 }
 
+void Server::req_library_dirs(const QString &library_id, Callee callee)
+{
+    QUrl url(QString("http://%1:8080/get_library_dirs").arg(ip));
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QString body = QString("{\"library_id\": \"%1\"}").arg(library_id);
+    QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
+    connect(reply, &QNetworkReply::finished,
+        this, [this, reply, callee]() { on_library_dirs_result(reply, callee); });
+}
+
+void Server::on_library_dirs_result(QNetworkReply *reply, Callee callee)
+{
+    std::function<void()> success_signal;
+    std::function<void(QString)> error_signal;
+
+    switch (callee) {
+    case CALLEE_SHOWS:
+        success_signal = [this]() {
+            emit shows_req_library_dirs_success();
+        };
+        error_signal = [this](QString message) {
+            emit shows_req_library_dirs_error(message);
+        };
+        break;
+    case CALLEE_MEDIA_DIRS:
+        success_signal = [this]() {
+            emit media_dirs_req_library_dirs_success();
+        };
+        error_signal = [this](QString message) {
+            emit media_dirs_req_library_dirs_error(message);
+        };
+        break;
+    case CALLEE_LIBRARY_DIRS:
+        success_signal = [this]() {
+            emit library_dirs_req_library_dirs_success();
+        };
+        error_signal = [this](QString message) {
+            emit library_dirs_req_library_dirs_error(message);
+        };
+        break;
+    default: break;
+    }
+
+    reply->deleteLater();
+    if (reply->error() != QNetworkReply::NoError) {
+        if (error_signal)
+            emit error_signal(reply->errorString());
+        return;
+    }
+
+    QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+    if (doc.isArray()) {
+        library_dirs = doc.array().toVariantList();
+        emit library_dirs_changed();
+        if (success_signal)
+            emit success_signal();
+    } else {
+        if (error_signal)
+            emit error_signal("Invalid data recieved from server.");
+    }
+}
+
 void Server::create_library_dir(const QString &library_id,
     const QString &new_library_dir)
 {

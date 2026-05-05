@@ -22,6 +22,9 @@ class Server : public QObject {
     Q_PROPERTY(QVariantList libraries
         READ get_libraries NOTIFY libraries_changed);
 
+    Q_PROPERTY(QVariantList library_dirs
+        READ get_library_dirs NOTIFY library_dirs_changed);
+
     Q_PROPERTY(QVariantList collections
         READ get_collections NOTIFY collections_changed);
 
@@ -51,6 +54,7 @@ public:
     QString get_ip() const;
     void set_ip(const QString &ip_prop);
     QVariantList get_libraries() const;
+    QVariantList get_library_dirs() const;
     QVariantList get_collections() const;
     QVariantList get_shows() const;
     QVariantList get_collection_shows() const;
@@ -75,6 +79,7 @@ public:
         CALLEE_CREATE_LIBRARY,
         CALLEE_SHOWS,
         CALLEE_MEDIA_DIRS,
+        CALLEE_LIBRARY_DIRS,
         CALLEE_VIDEOS,
         CALLEE_PROCESS_JOBS,
         CALLEE_PLAYER,
@@ -107,6 +112,14 @@ signals:
 
     void create_library_success();
     void create_library_error(QString message);
+
+    void shows_req_library_dirs_success();
+    void shows_req_library_dirs_error(QString message);
+    void media_dirs_req_library_dirs_success();
+    void media_dirs_req_library_dirs_error(QString message);
+    void library_dirs_req_library_dirs_success();
+    void library_dirs_req_library_dirs_error(QString message);
+    void library_dirs_changed();
 
     void create_library_dir_success();
     void create_library_dir_error(QString message);
@@ -177,6 +190,7 @@ public slots:
     void req_libraries(Callee callee);
     void create_library(const QString &library_type,
         const QString &library_name);
+    void req_library_dirs(const QString &library_id, Callee callee);
     void create_library_dir(const QString &library_id,
         const QString &new_library_dir);
     void req_collections(const QString &library_id);
@@ -196,6 +210,7 @@ public slots:
 private slots:
     void on_libraries_result(QNetworkReply *reply, Callee callee);
     void on_create_library_result(QNetworkReply *reply);
+    void on_library_dirs_result(QNetworkReply *reply, Callee callee);
     void on_create_library_dir_result(QNetworkReply *reply);
     void on_collections_result(QNetworkReply *reply);
     void on_shows_result(QNetworkReply *reply, Callee callee);
