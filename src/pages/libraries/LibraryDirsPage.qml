@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts
 import Server
 
 Item {
@@ -87,11 +88,20 @@ Item {
                 spacing: 10
                 clip: true
 
-                delegate: Text {
-                    text: modelData.real_path
-                    font.pixelSize: 18
-                    height: 35
-                    anchors.horizontalCenter: parent?.horizontalCenter
+                delegate: RowLayout {
+                    height: 45
+                    spacing: 25
+                    anchors.horizontalCenter: parent.horizontalCenter
+
+                    Text {
+                        text: modelData.real_path
+                        font.pixelSize: 18
+                        height: 45
+                    }
+
+                    Button {
+                        text: "Remove"
+                    }
                 }
             }
 
