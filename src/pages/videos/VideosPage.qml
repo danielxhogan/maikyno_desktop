@@ -91,7 +91,6 @@ Item {
 
             Item {
                 anchors.right: parent.right
-                width: 250
 
                 Item {
                     width: rename_extras_btn.width + 20

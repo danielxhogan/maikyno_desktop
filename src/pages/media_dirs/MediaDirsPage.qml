@@ -10,6 +10,19 @@ Item {
     Connections {
         target: Server
 
+        function onMedia_dirs_req_library_dirs_success()
+        {
+            media_dirs_root.loading = false
+            media_dirs_err_msg.text = ""
+            pages_stack.push(library_dirs_component)
+        }
+
+        function onMedia_dirs_req_library_dirs_error(message)
+        {
+            media_dirs_root.loading = false
+            media_dirs_err_msg.text = message
+        }
+
         function onScan_library_success()
         {
             media_dirs_root.loading = false
@@ -73,20 +86,62 @@ Item {
                 }
             }
 
-            Button {
-                text: "Scan Library"
-                visible: app.movie_library && !app.viewing_collection
+            Item {
                 anchors.right: parent.right
-                leftPadding: 10
-                rightPadding: 10
-                enabled: !media_dirs_root.loading
 
-                onClicked: {
-                    media_dirs_root.loading = true
-                    media_dirs_err_msg.text = "Scanning library"
-                    Server.scan_library(app.library_id, Server.CALLEE_MEDIA_DIRS)
+                Item {
+                    width: view_folders_btn.width + 20
+                    anchors.right: scan_library_item.left
+
+                    Button {
+                        id: view_folders_btn
+                        text: "View Folders"
+                        visible: app.movie_library && !app.viewing_collection
+                        enabled: !media_dirs_root.loading
+                        leftPadding: 10
+                        rightPadding: 10
+
+                        onClicked: {
+                            media_dirs_root.loading = true
+                            Server.req_library_dirs(app.library_id,
+                                Server.CALLEE_MEDIA_DIRS)
+                        }
+                    }
+                }
+
+                Item {
+                    id: scan_library_item
+                    width: scan_library_btn.width + 20
+                    anchors.right: delete_library_btn.left
+
+                    Button {
+                        id: scan_library_btn
+                        text: "Scan Library"
+                        visible: app.movie_library && !app.viewing_collection
+                        enabled: !media_dirs_root.loading
+                        leftPadding: 10
+                        rightPadding: 10
+
+                        onClicked: {
+                            media_dirs_root.loading = true
+                            media_dirs_err_msg.text = "Scanning library"
+                            Server.scan_library(app.library_id,
+                                Server.CALLEE_MEDIA_DIRS)
+                        }
+                    }
+                }
+
+                Button {
+                    id: delete_library_btn
+                    text: "Delete Library"
+                    visible: app.movie_library && !app.viewing_collection
+                    enabled: !media_dirs_root.loading
+                    anchors.right: parent.right
+                    leftPadding: 10
+                    rightPadding: 10
                 }
             }
+
         }
 
         Column {

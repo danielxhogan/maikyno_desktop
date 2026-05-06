@@ -139,6 +139,11 @@ void Server::on_create_library_result(QNetworkReply *reply)
     emit create_library_error(reply->errorString());
 }
 
+QVariantList Server::get_library_dirs() const
+{
+    return library_dirs;
+}
+
 void Server::req_library_dirs(const QString &library_id, Callee callee)
 {
     QUrl url(QString("http://%1:8080/get_library_dirs").arg(ip));
@@ -194,6 +199,7 @@ void Server::on_library_dirs_result(QNetworkReply *reply, Callee callee)
     if (doc.isArray()) {
         library_dirs = doc.array().toVariantList();
         emit library_dirs_changed();
+
         if (success_signal)
             emit success_signal();
     } else {

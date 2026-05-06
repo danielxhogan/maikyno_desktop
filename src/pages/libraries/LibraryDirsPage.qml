@@ -14,9 +14,22 @@ Item {
         {
             library_dirs_root.loading = false
             create_library_dir_err_msg.text = ""
+            Server.req_library_dirs(app.library_id, Server.CALLEE_LIBRARY_DIRS)
         }
 
         function onCreate_library_dir_error(message)
+        {
+            library_dirs_root.loading = false
+            create_library_dir_err_msg.text = message
+        }
+
+        function onLibrary_dirs_req_library_dirs_success()
+        {
+            library_dirs_root.loading = false
+            create_library_dir_err_msg.text = ""
+        }
+
+        function onLibrary_dirs_req_library_dirs_error(message)
         {
             library_dirs_root.loading = false
             create_library_dir_err_msg.text = message
@@ -55,7 +68,7 @@ Item {
             Text {
                 id: title
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: "Library Dirs"
+                text: "Library Folders"
                 font.bold: true
                 font.pixelSize: 24
             }
@@ -66,16 +79,33 @@ Item {
                 text: ""
             }
 
+            ListView {
+                model: Server.library_dirs
+                width: parent.width
+                height: contentHeight
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: 10
+                clip: true
+
+                delegate: Text {
+                    text: modelData.real_path
+                    font.pixelSize: 18
+                    height: 35
+                    anchors.horizontalCenter: parent?.horizontalCenter
+                }
+            }
+
             Text {
                 id: library_type_title
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: "Add Library Directory"
+                text: "Add Library Folder"
                 font.bold: true
                 font.pixelSize: 18
             }
 
             TextField {
                 anchors.horizontalCenter: parent.horizontalCenter
+                width: 300
                 onTextEdited: {
                     library_dirs_root.new_library_dir = text
                 }
