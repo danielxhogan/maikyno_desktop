@@ -108,10 +108,17 @@ signals:
     void connect_req_libraries_error(QString message);
     void create_library_req_libraries_success();
     void create_library_req_libraries_error(QString message);
+    void media_dirs_req_libraries_success();
+    void media_dirs_req_libraries_error(QString message);
     void libraries_changed();
 
     void create_library_success();
     void create_library_error(QString message);
+
+    void shows_delete_library_success();
+    void shows_delete_library_error(QString message);
+    void media_dirs_delete_library_success();
+    void media_dirs_delete_library_error(QString message);
 
     void shows_req_library_dirs_success();
     void shows_req_library_dirs_error(QString message);
@@ -143,10 +150,10 @@ signals:
 
     void req_seasons_success();
     void req_seasons_error(QString message);
-    void initial_req_movies_success();
-    void initial_req_movies_error(QString message);
-    void post_scan_req_movies_success();
-    void post_scan_req_movies_error(QString message);
+    void libraries_req_movies_success();
+    void libraries_req_movies_error(QString message);
+    void media_dirs_req_movies_success();
+    void media_dirs_req_movies_error(QString message);
     void media_dirs_changed();
 
     void req_collection_movies_success();
@@ -193,6 +200,7 @@ public slots:
     void req_libraries(Callee callee);
     void create_library(const QString &library_type,
         const QString &library_name);
+    void delete_library(const QString &library_id, Callee callee);
     void req_library_dirs(const QString &library_id, Callee callee);
     void create_library_dir(const QString &library_id,
         const QString &new_library_dir);
@@ -214,6 +222,7 @@ public slots:
 private slots:
     void on_libraries_result(QNetworkReply *reply, Callee callee);
     void on_create_library_result(QNetworkReply *reply);
+    void on_delete_library_result(QNetworkReply *reply, Callee callee);
     void on_library_dirs_result(QNetworkReply *reply, Callee callee);
     void on_create_library_dir_result(QNetworkReply *reply);
     void on_delete_library_dir_result(QNetworkReply *reply);

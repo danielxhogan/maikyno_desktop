@@ -37,6 +37,19 @@ Item {
             media_dirs_err_msg.text = message
         }
 
+        function onMedia_dirs_delete_library_success()
+        {
+            media_dirs_root.loading = false
+            Server.req_libraries(Server.CALLEE_MEDIA_DIRS)
+            pages_stack.pop()
+        }
+
+        function onMedia_dirs_delete_library_error(message)
+        {
+            media_dirs_root.loading = false
+            media_dirs_err_msg.text = message
+        }
+
         function onReq_collection_movies_success()
         {
             media_dirs_root.loading = false
@@ -139,6 +152,12 @@ Item {
                     anchors.right: parent.right
                     leftPadding: 10
                     rightPadding: 10
+
+                    onClicked: {
+                        media_dirs_root.loading = true
+                        Server.delete_library(app.library_id,
+                            Server.CALLEE_MEDIA_DIRS)
+                    }
                 }
             }
 

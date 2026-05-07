@@ -38,7 +38,7 @@ Item {
             libraries_err_msg.text = message
         }
 
-        function onInitial_req_movies_success()
+        function onLibraries_req_movies_success()
         {
             libraries_root.loading = false
             libraries_err_msg.text = ""
@@ -47,7 +47,7 @@ Item {
             pages_stack.push(media_dirs_component)
         }
 
-        function onInitial_req_movies_error(message)
+        function onLibraries_req_movies_error(message)
         {
             libraries_root.loading = false
             libraries_err_msg.text = message

@@ -75,6 +75,14 @@ void Server::on_libraries_result(QNetworkReply *reply, Callee callee)
             emit create_library_req_libraries_error(message);
         };
         break;
+    case CALLEE_MEDIA_DIRS:
+        success_signal = [this]() {
+            emit media_dirs_req_libraries_success();
+        };
+        error_signal = [this](QString message) {
+            emit media_dirs_req_libraries_error(message);
+        };
+        break;
     default: break;
     }
 
@@ -137,6 +145,53 @@ void Server::on_create_library_result(QNetworkReply *reply)
     }
 
     emit create_library_error(reply->errorString());
+}
+
+void Server::delete_library(const QString &library_id, Callee callee)
+{
+    QUrl url(QString("http://%1:8080/remove_library").arg(ip));
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QString body = QString("{\"library_id\": \"%1\"}").arg(library_id);
+    QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
+    connect(reply, &QNetworkReply::finished,
+        this, [this, reply, callee]() { on_delete_library_result(reply, callee); });
+}
+
+void Server::on_delete_library_result(QNetworkReply *reply, Callee callee)
+{
+    std::function<void()> success_signal;
+    std::function<void(QString)> error_signal;
+
+    switch (callee) {
+    case CALLEE_SHOWS:
+        success_signal = [this]() {
+            emit shows_delete_library_success();
+        };
+        error_signal = [this](QString message) {
+            emit shows_delete_library_error(message);
+        };
+        break;
+    case CALLEE_MEDIA_DIRS:
+        success_signal = [this]() {
+            emit media_dirs_delete_library_success();
+        };
+        error_signal = [this](QString message) {
+            emit media_dirs_delete_library_error(message);
+        };
+        break;
+    default: break;
+    }
+
+    reply->deleteLater();
+    if (reply->error() != QNetworkReply::NoError) {
+        if (error_signal)
+            emit error_signal(reply->errorString());
+        return;
+    }
+
+    if (success_signal)
+        emit success_signal();
 }
 
 QVariantList Server::get_library_dirs() const
@@ -455,18 +510,18 @@ void Server::on_movies_result(QNetworkReply *reply, Callee callee)
     switch (callee) {
     case CALLEE_LIBRARIES:
         success_signal = [this]() {
-            emit initial_req_movies_success();
+            emit libraries_req_movies_success();
         };
         error_signal = [this](QString message) {
-            emit initial_req_movies_error(message);
+            emit libraries_req_movies_error(message);
         };
         break;
     case CALLEE_MEDIA_DIRS:
         success_signal = [this]() {
-            emit post_scan_req_movies_success();
+            emit media_dirs_req_movies_success();
         };
         error_signal = [this](QString message) {
-            emit post_scan_req_movies_error(message);
+            emit media_dirs_req_movies_error(message);
         };
         break;
     default: break;
