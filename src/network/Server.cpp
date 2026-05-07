@@ -246,6 +246,28 @@ void Server::on_create_library_dir_result(QNetworkReply *reply)
     emit create_library_dir_success();
 }
 
+void Server::delete_library_dir(const QString &library_dir_id)
+{
+    QUrl url(QString("http://%1:8080/remove_library_dir").arg(ip));
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QString body = QString("{\"library_dir_id\": \"%1\"}").arg(library_dir_id);
+    QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
+    connect(reply, &QNetworkReply::finished,
+        this, [this, reply]() { on_delete_library_dir_result(reply); });
+}
+
+void Server::on_delete_library_dir_result(QNetworkReply *reply)
+{
+    reply->deleteLater();
+    if (reply->error() != QNetworkReply::NoError) {
+        emit delete_library_dir_error(reply->errorString());
+        return;
+    }
+
+    emit delete_library_dir_success();
+}
+
 QVariantList Server::get_collections() const
 {
     return collections;

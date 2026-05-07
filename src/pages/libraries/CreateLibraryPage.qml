@@ -95,6 +95,7 @@ Item {
 
                 RadioButton {
                     id: movie_radio_btn
+                    enabled: !create_library_root.loading
                     text: "Movie"
                     checked: true
                     ButtonGroup.group: library_type_group
@@ -109,6 +110,7 @@ Item {
 
                 RadioButton {
                     id: show_radio_btn
+                    enabled: !create_library_root.loading
                     text: "Show"
                     checked: false
                     ButtonGroup.group: library_type_group
@@ -131,6 +133,7 @@ Item {
             }
 
             TextField {
+                enabled: !create_library_root.loading
                 anchors.horizontalCenter: parent.horizontalCenter
                 onTextEdited: {
                     create_library_root.library_name = text
@@ -139,6 +142,7 @@ Item {
 
             Button {
                 text: "Create Library"
+                enabled: !create_library_root.loading
                 leftPadding: 10
                 rightPadding: 10
                 anchors.horizontalCenter: parent.horizontalCenter

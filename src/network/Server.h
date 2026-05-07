@@ -124,6 +124,9 @@ signals:
     void create_library_dir_success();
     void create_library_dir_error(QString message);
 
+    void delete_library_dir_success();
+    void delete_library_dir_error(QString message);
+
     void req_collections_success();
     void req_collections_error(QString message);
     void collections_changed();
@@ -193,6 +196,7 @@ public slots:
     void req_library_dirs(const QString &library_id, Callee callee);
     void create_library_dir(const QString &library_id,
         const QString &new_library_dir);
+    void delete_library_dir(const QString &library_dir_id);
     void req_collections(const QString &library_id);
     void req_library_contents(const QString &library_id,
         LibraryType lib_type, Callee callee);
@@ -212,6 +216,7 @@ private slots:
     void on_create_library_result(QNetworkReply *reply);
     void on_library_dirs_result(QNetworkReply *reply, Callee callee);
     void on_create_library_dir_result(QNetworkReply *reply);
+    void on_delete_library_dir_result(QNetworkReply *reply);
     void on_collections_result(QNetworkReply *reply);
     void on_shows_result(QNetworkReply *reply, Callee callee);
     void on_collection_shows_result(QNetworkReply *reply);

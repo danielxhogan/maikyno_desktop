@@ -72,6 +72,7 @@ Item {
 
             Button {
                 text: "Create Library"
+                enabled: !libraries_root.loading
                 anchors.right: parent.right
                 leftPadding: 10
                 rightPadding: 10
@@ -123,7 +124,6 @@ Item {
                         Server.req_collections(modelData.id)
                     }
                 }
-
             }
         }
     }

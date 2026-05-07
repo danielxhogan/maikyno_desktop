@@ -52,15 +52,15 @@ Item {
             }
 
             TextField {
-                id: ip_field;
+                id: ip_field
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: Server.ip
             }
 
             Button {
-                anchors.horizontalCenter: parent.horizontalCenter
                 text: "Connect"
                 enabled: !connect_root.loading
+                anchors.horizontalCenter: parent.horizontalCenter
                 onClicked: {
                     connect_root.loading = true
                     Server.req_libraries(Server.CALLEE_CONNECT)

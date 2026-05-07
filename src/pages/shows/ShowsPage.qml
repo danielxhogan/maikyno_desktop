@@ -76,11 +76,11 @@ Item {
 
             Button {
                 text: "Scan Library"
+                enabled: !shows_root.loading
                 visible: !app.viewing_collection
                 anchors.right: parent.right
                 leftPadding: 10
                 rightPadding: 10
-                enabled: !shows_root.loading
 
                 onClicked: {
                     shows_root.loading = true

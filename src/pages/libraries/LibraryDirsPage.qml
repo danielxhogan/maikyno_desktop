@@ -13,12 +13,24 @@ Item {
 
         function onCreate_library_dir_success()
         {
-            library_dirs_root.loading = false
             create_library_dir_err_msg.text = ""
+            new_library_dir_text_field.text = ""
             Server.req_library_dirs(app.library_id, Server.CALLEE_LIBRARY_DIRS)
         }
 
         function onCreate_library_dir_error(message)
+        {
+            library_dirs_root.loading = false
+            create_library_dir_err_msg.text = message
+        }
+
+        function onDelete_library_dir_success()
+        {
+            create_library_dir_err_msg.text = ""
+            Server.req_library_dirs(app.library_id, Server.CALLEE_LIBRARY_DIRS)
+        }
+
+        function onDelete_library_dir_error(message)
         {
             library_dirs_root.loading = false
             create_library_dir_err_msg.text = message
@@ -101,6 +113,12 @@ Item {
 
                     Button {
                         text: "Remove"
+                        enabled: !library_dirs_root.loading
+
+                        onClicked: {
+                            library_dirs_root.loading = true
+                            Server.delete_library_dir(modelData.id)
+                        }
                     }
                 }
             }
@@ -114,6 +132,8 @@ Item {
             }
 
             TextField {
+                id: new_library_dir_text_field
+                enabled: !library_dirs_root.loading
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: 300
                 onTextEdited: {
@@ -123,6 +143,7 @@ Item {
 
             Button {
                 text: "Submit"
+                enabled: !library_dirs_root.loading
                 leftPadding: 10
                 rightPadding: 10
                 anchors.horizontalCenter: parent.horizontalCenter

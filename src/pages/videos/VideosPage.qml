@@ -84,7 +84,6 @@ Item {
 
             Button {
                 text: "Back"
-                enabled: !videos_root.loading
                 anchors.left: parent.left
                 onClicked: pages_stack.pop();
             }
