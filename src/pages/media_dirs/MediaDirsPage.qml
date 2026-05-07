@@ -116,6 +116,7 @@ Item {
 
                         onClicked: {
                             media_dirs_root.loading = true
+                            app.creating_library = false
                             Server.req_library_dirs(app.library_id,
                                 Server.CALLEE_MEDIA_DIRS)
                         }

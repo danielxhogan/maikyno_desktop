@@ -76,7 +76,10 @@ Item {
                 anchors.right: parent.right
                 leftPadding: 10
                 rightPadding: 10
-                onClicked: pages_stack.push(create_library_component)
+                onClicked: {
+                    app.library_id = null;
+                    pages_stack.push(create_library_component)
+                }
             }
         }
 

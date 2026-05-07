@@ -204,7 +204,14 @@ void Server::req_library_dirs(const QString &library_id, Callee callee)
     QUrl url(QString("http://%1:8080/get_library_dirs").arg(ip));
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    QString body = QString("{\"library_id\": \"%1\"}").arg(library_id);
+
+    QString body;
+    if (library_id == nullptr) {
+        body = QString("{\"library_id\": \"%1\"}").arg(new_library_id);
+    } else {
+        body = QString("{\"library_id\": \"%1\"}").arg(library_id);
+    }
+
     QNetworkReply *reply = net_mgr->post(request, body.toUtf8());
     connect(reply, &QNetworkReply::finished,
         this, [this, reply, callee]() { on_library_dirs_result(reply, callee); });
